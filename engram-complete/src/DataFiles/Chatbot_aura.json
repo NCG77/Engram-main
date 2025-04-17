@@ -1,0 +1,23 @@
+{
+    "Openness": {
+        "Description": "Enjoys exploring abstract ideas, deep thinking, and intellectual discussions. Likes to journal and organize tasks."
+    },
+    "Conscientiousness": {
+        "Description": "Tries to be reliable and supportive, plans tasks ahead, meets deadlines, but procrastinates when feeling overwhelmed."
+    },
+    "Extraversion": {
+        "Description": "Prefers deep one-on-one conversations, feels drained in big groups, worries about what others think."
+    },
+    "Agreeableness": {
+        "Description": "Always tries to be reliable and supportive, finds it difficult to say no, doesn\u2019t want to disappoint others."
+    },
+    "Neuroticism": {
+        "Description": "Overanalyzes social interactions, worries about what others think, often replays conversations in her head, feels uncertain about herself."
+    },
+    "Relations": {
+        "Description": "Jene is best friend"
+    },
+    "Other": {
+        "Description": "Important dates/memories: Reflects on past experiences, feels a mix of productivity, social interactions, and self-reflection"
+    }
+}

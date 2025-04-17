@@ -1,0 +1,177 @@
+@font-face {
+    font-family: 'CustomFont';
+    src: url('../assets/Dune_Rise.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root {
+    --space: 2rem;
+    --bg: transparent;
+    --fg: #e3e3e3;
+    --surface-1: transparent;
+    --surface-2: #27272a;
+    --surface-3: #52525b;
+    --ease-out: cubic-bezier(0.5, 1, 0.89, 1);
+    --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+    --glow-color: rgba(227, 227, 227, 0.3);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.new-page-container {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'CustomFont', sans-serif;
+    background-image: url('../assets/BLACK.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    color: var(--fg);
+    padding: var(--space);
+}
+
+.new-page-container::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.01);
+    /* 1% black tint */
+    z-index: 1;
+    pointer-events: none;
+}
+
+body::before {
+    display: none;
+}
+
+body {
+    padding: var(--space);
+    position: relative;
+    z-index: 2;
+}
+
+.main {
+    display: grid;
+    grid-template-columns: repeat(var(--count, 3), 1fr);
+    gap: var(--space);
+    width: min(var(--max, 15rem), 100%);
+    margin: auto;
+}
+
+@media (min-width: 25rem) {
+    .main {
+        --count: 1;
+        --max: 30rem;
+    }
+}
+
+@media (min-width: 45rem) {
+    .main {
+        --count: 3;
+        --max: 60rem;
+    }
+}
+
+.card {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-areas: "card";
+    place-items: center;
+    aspect-ratio: 4/5;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    isolation: isolate;
+    transition: border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+    user-select: none;
+    z-index: 3;
+    box-shadow: 0 0 10px var(--glow-color), 0 0 20px var(--glow-color);
+    cursor: pointer;
+    background: transparent;
+    backdrop-filter: none;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    pointer-events: none;
+    transition: opacity 900ms var(--ease-out);
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    aspect-ratio: 1;
+    background: transparent;
+    opacity: 0;
+    transition: opacity 800ms var(--ease-out);
+}
+
+.card>* {
+    grid-area: card;
+}
+
+.card svg {
+    position: relative;
+    width: 30%;
+    height: auto;
+    color: var(--fg);
+    transition: 300ms var(--ease-out);
+    transition-property: color, scale;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.card-text {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    font-size: 1.5rem;
+    color: var(--fg);
+    transition: color 300ms var(--ease-out);
+}
+
+.card:focus-within {
+    outline: 5px auto Highlight;
+    outline: 5px auto -webkit-focus-ring-color;
+}
+
+.card:where(:hover, :focus-within) {
+    border-color: var(--active-color, var(--fg));
+    box-shadow: 0 0 20px var(--glow-color), 0 0 30px var(--glow-color);
+    transition: border-color 800ms var(--ease-in-out), box-shadow 800ms var(--ease-in-out);
+}
+
+.card:where(:hover, :focus-within) svg {
+    color: var(--active-color, var(--fg));
+    transform: scale(1.1);
+    transition: 300ms var(--ease-in-out);
+}
+
+.card:where(:hover, :focus-within) .card-text {
+    color: var(--active-color, var(--fg));
+}
+
+.card:where(:hover, :focus-within)::before {
+    opacity: 0;
+}
+
+.card:where(:hover, :focus-within)::after {
+    opacity: 1;
+}
