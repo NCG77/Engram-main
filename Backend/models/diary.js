@@ -1,4 +1,5 @@
 // models/Diary.js
+console.log("this works");
 const mongoose = require("mongoose");
 
 const diarySchema = new mongoose.Schema(
@@ -21,3 +22,5 @@ const diarySchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("Diary", diarySchema);
+
+console.log("this works");

@@ -1,7 +1,8 @@
-const { spawn } = require("child_process");
+const { fork } = require("child_process");
 const path = require("path");
 const Diary = require("../models/diary");
 const Aura = require("../models/Aura");
+console.log("woopdi");
 
 const updateAura = async (req, res) => {
   console.log("✅ Hit /api/aura/update");
@@ -18,45 +19,39 @@ const updateAura = async (req, res) => {
 
     const payload = diaries.map((d) => ({ text: d.content }));
 
-    // 2️⃣ Prepare Python extractor path
-    const extractorPath = path.join(
-      __dirname,
-      "../TextExtraction/Extractor.py"
-    );
-    console.log("🚀 Spawning Python with:", extractorPath);
+    // 2️⃣ Prepare JavaScript extractor path
+    const extractorPath = path.join(__dirname, "../TextExtraction/Extractor");
+    console.log("🚀 Spawning extractor file with:", extractorPath);
 
-    // 3️⃣ Spawn the Python process using stdin
-    const py = spawn("python", [extractorPath], {
-      stdio: ["pipe", "pipe", "pipe"],
-    });
+    // 3️⃣ Spawn the Node.js process using fork
+    const extractorProcess = fork(extractorPath);
 
     let stdout = "";
     let stderr = "";
 
-    // Send diary content to Python via stdin
-    py.stdin.write(JSON.stringify(payload));
-    py.stdin.end();
+    // Send diary content to the extractor process
+    extractorProcess.send({ payload });
 
-    py.stdout.on("data", (chunk) => {
-      stdout += chunk.toString();
-      console.log("🐍 Python stdout:", chunk.toString());
+    extractorProcess.on("message", (message) => {
+      if (message.error) {
+        stderr += message.error;
+        console.error("🐛 Extractor error:", message.error);
+      } else if (message.result) {
+        stdout += JSON.stringify(message.result);
+        console.log("📤 Extractor result:", message.result);
+      }
     });
 
-    py.stderr.on("data", (chunk) => {
-      stderr += chunk.toString();
-      console.error("🐛 Python stderr:", chunk.toString());
+    extractorProcess.on("error", (err) => {
+      console.error("❌ Extractor process error:", err);
+      return res.status(500).json({ error: "Failed to start extractor script." });
     });
 
-    py.on("error", (err) => {
-      console.error("❌ Python process error:", err);
-      return res.status(500).json({ error: "Failed to start Python script." });
-    });
-
-    py.on("close", async (code) => {
-      console.log("🔚 Python process exited with code:", code);
+    extractorProcess.on("close", async (code) => {
+      console.log("🔚 Extractor process exited with code:", code);
       if (code !== 0) {
         return res.status(500).json({
-          error: "Python extractor failed",
+          error: "Extractor failed",
           details: stderr,
         });
       }
@@ -67,7 +62,7 @@ const updateAura = async (req, res) => {
       } catch (err) {
         console.error("❌ JSON parse error:", err);
         return res.status(500).json({
-          error: "Invalid JSON from Python extractor",
+          error: "Invalid JSON from extractor",
           raw: stdout,
         });
       }

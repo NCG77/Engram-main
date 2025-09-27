@@ -18,7 +18,7 @@ router.post("/update", authenticateUser, async (req, res) => {
     await updateAura(req, res);
   } catch (error) {
     console.error("🔥 Error in /update:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Internal server error woopdi" });
   }
 });
 

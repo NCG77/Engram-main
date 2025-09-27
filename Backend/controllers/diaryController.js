@@ -1,12 +1,12 @@
 // controllers/diaryController.js
 const Diary = require("../models/diary");
 const Aura = require("../models/Aura");
-const { spawn } = require("child_process");
+const { fork } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
 /**
- * Helper that pulls all diaries, runs extractor.py, upserts Aura.
+ * Helper that pulls all diaries, runs extractor.js, upserts Aura.
  * Returns a Promise that resolves to the updated Aura doc, or rejects on error.
  */
 async function updateUserAura(userId) {
@@ -22,18 +22,20 @@ async function updateUserAura(userId) {
   const tempFile = path.join(tempDir, `diary_${userId}.json`);
   fs.writeFileSync(tempFile, JSON.stringify(payload, null, 2));
 
-  // 3️⃣ Spawn the Python extractor
+  // 3️⃣ Fork the Node.js extractor
   return new Promise((resolve, reject) => {
-    const extractor = spawn("python3", [
-      path.join(__dirname, "../../extractor.py"),
-      tempFile,
-    ]);
+    const extractor = fork(path.join(__dirname, "../../extractor.js"), [tempFile]);
 
     let stdout = "";
     let stderr = "";
 
-    extractor.stdout.on("data", (data) => (stdout += data.toString()));
-    extractor.stderr.on("data", (data) => (stderr += data.toString()));
+    extractor.on("message", (message) => {
+      if (message.type === "stdout") {
+        stdout += message.data;
+      } else if (message.type === "stderr") {
+        stderr += message.data;
+      }
+    });
 
     extractor.on("close", async (code) => {
       if (code !== 0) {
@@ -56,6 +58,10 @@ async function updateUserAura(userId) {
       } catch (mongoErr) {
         reject(mongoErr);
       }
+    });
+
+    extractor.on("error", (err) => {
+      reject(err);
     });
   });
 }

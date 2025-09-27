@@ -1,4 +1,5 @@
 const express = require("express");
+
 const {
   registerUser,
   loginUser,
@@ -11,3 +12,4 @@ router.post("/login", loginUser); // New login route
 router.get("/users", getUsers);
 
 module.exports = router;
+

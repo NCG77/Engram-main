@@ -1,28 +1,45 @@
+<<<<<<< Updated upstream
 /* Main container styles */
 .main-container {
     min-height: 100vh;
+=======
+.main-container {
+    height: auto;
+>>>>>>> Stashed changes
     width: 100%;
     position: relative;
     overflow-x: hidden;
 }
 
+<<<<<<< Updated upstream
 /* Background patterns styling */
 .background-patterns {
     position: fixed;
     /* Fixed position to cover entire viewport */
+=======
+.background-patterns {
+    position: fixed;
+>>>>>>> Stashed changes
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: -1;
+<<<<<<< Updated upstream
     /* Behind all content */
+=======
+>>>>>>> Stashed changes
 }
 
 .pattern-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
+<<<<<<< Updated upstream
     /* This ensures the image covers the full area */
 }
 
 /* Other styles from your LandingPage.css file would go here... */
+=======
+}
+>>>>>>> Stashed changes

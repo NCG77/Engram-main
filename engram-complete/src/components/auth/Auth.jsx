@@ -92,6 +92,7 @@ const Auth = () => {
   };
 
   return (
+<<<<<<< Updated upstream
     <div className="page-wrapper">
       <div className="container">
         {/* SIGN UP PANEL */}
@@ -152,10 +153,50 @@ const Auth = () => {
               <button
                 className="ghost btn"
                 onClick={() => { clearMessage(); toggle(true); }}
+=======
+    <div className="auth-page-wrapper">
+      <div className="auth-container">
+        <div className={`panel sign-up-container ${!signIn ? "active" : ""}`}>
+          <form onSubmit={handleSignUp}>
+            {message && <div className={`message-box ${messageType}`}>{message}</div>}
+            <h1 className="auth-title">Create Account</h1>
+            <div className="input-group">
+              <input
+                type="text"
+                placeholder="Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="input-group">
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="input-group">
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="auth-btn">Sign Up</button>
+            <div className="mobile-toggle">
+              <p>Already have an account?</p>
+              <button
+                type="button"
+                onClick={() => { clearMessage(); toggle(true); }}
+                className="toggle-link"
+>>>>>>> Stashed changes
               >
                 Sign In
               </button>
             </div>
+<<<<<<< Updated upstream
 
             <div className="overlay-panel overlay-right">
               <h1 className="white">Welcome!</h1>
@@ -163,10 +204,72 @@ const Auth = () => {
               <button
                 className="ghost btn"
                 onClick={() => { clearMessage(); toggle(false); }}
+=======
+          </form>
+        </div>
+
+        <div className={`panel sign-in-container ${signIn ? "active" : ""}`}>
+          <form onSubmit={handleSignIn}>
+            {message && <div className={`message-box ${messageType}`}>{message}</div>}
+            <h1 className="auth-title">Sign In</h1>
+            <div className="input-group">
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="input-group">
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <a href="#" className="forgot-password">Forgot your password?</a>
+            <button type="submit" className="auth-btn">Sign In</button>
+            <div className="mobile-toggle">
+              <p>Don't have an account?</p>
+              <button
+                type="button"
+                onClick={() => { clearMessage(); toggle(false); }}
+                className="toggle-link"
+>>>>>>> Stashed changes
               >
                 Sign Up
               </button>
             </div>
+<<<<<<< Updated upstream
+=======
+          </form>
+        </div>
+
+        <div className={`overlay-container ${!signIn ? "right-panel-active" : ""}`}>
+          <div className="overlay">
+            <div className="overlay-panel overlay-left">
+              <h1 className="overlay-title">Welcome Back</h1>
+              <p>Access your Engram account and continue your journey</p>
+              <button
+                className="auth-btn ghost"
+                onClick={() => { clearMessage(); toggle(true); }}
+              >
+                Sign In
+              </button>
+            </div>
+
+            <div className="overlay-panel overlay-right">
+              <h1 className="overlay-title">Hello, Friend!</h1>
+              <p>Enter your details and start your journey with Engram</p>
+              <button
+                className="auth-btn ghost"
+                onClick={() => { clearMessage(); toggle(false); }}
+              >
+                Sign Up
+              </button>
+            </div>
+>>>>>>> Stashed changes
           </div>
         </div>
       </div>

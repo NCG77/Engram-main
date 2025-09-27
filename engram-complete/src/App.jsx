@@ -6,7 +6,10 @@ import NewPage from './components/new_page/new_page';
 import ChatInterface from "./components/chat_page/ChatInterface";
 import DiaryApp from "./components/diary_page/DiaryApp";
 import LandingPage from "./components/LandingPage/landing";
+<<<<<<< Updated upstream
 import ReviewPage from "./components/review_page/ReviewPage";
+=======
+>>>>>>> Stashed changes
 
 const App = () => {
   return (
@@ -14,10 +17,16 @@ const App = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<Auth />} />
+<<<<<<< Updated upstream
         <Route path="/new_page" element={<NewPage />} />
         <Route path="/chat" element={<ChatInterface />} />
         <Route path="/diary" element={<DiaryApp />} />
         <Route path="/review" element={<ReviewPage />} />
+=======
+        <Route path="/new_page" element={<NewPage />} />  
+        <Route path="/chat" element={<ChatInterface />} />
+        <Route path="/diary" element={<DiaryApp />} />
+>>>>>>> Stashed changes
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>

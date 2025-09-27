@@ -18,11 +18,18 @@ export default function LandingPage() {
             setIsLoaded(true);
         }, 300);
 
+<<<<<<< Updated upstream
         // Create intersection observer for all sections
         const observerOptions = {
             root: null, // viewport
             rootMargin: '0px',
             threshold: 0.2 // 20% of the element must be visible
+=======
+        const observerOptions = {
+            root: null, 
+            rootMargin: '0px',
+            threshold: 0.2 
+>>>>>>> Stashed changes
         };
 
         const sectionObserver = new IntersectionObserver((entries) => {
@@ -59,11 +66,19 @@ export default function LandingPage() {
         },
         {
             question: "How will my final digital version be usable?",
+<<<<<<< Updated upstream
             answer: "Your final digital replica will be delivered through the a seperate page, test, and interact with it"
         },
         {
             question: "Can I upgrade my digital version?",
             answer: "Yes, you can upgrade your digital version at any time. We offer different tiers of service with additional features and capabilities that can be added as-per your needs."
+=======
+            answer: "Your final digital replica will be delivered through the a seperate page, where you can test and interact with it"
+        },
+        {
+            question: "Can I upgrade my digital version?",
+            answer: "Yes, you can upgrade your digital version at any time. We will offer different tiers of service with additional features and capabilities that can be added as-per your needs."
+>>>>>>> Stashed changes
         },
         {
             question: "Do I get full ownership of my personality?",
@@ -71,7 +86,11 @@ export default function LandingPage() {
         },
         {
             question: "What are your payment methods?",
+<<<<<<< Updated upstream
             answer: "We accept all major credit cards, UPI, and bank transfers. Payment plans are also available for our premium packages."
+=======
+            answer: "We will accept all major credit cards, UPI, and bank transfers. Payment plans are currently under developement for our premium packages."
+>>>>>>> Stashed changes
         },
         {
             question: "Can I request a deletion?",
@@ -104,9 +123,13 @@ export default function LandingPage() {
                 <h1 className="headline">
                     Engram
                 </h1>
+<<<<<<< Updated upstream
                 <p className="subheadline">
                     Replicate your digital self.
                 </p>
+=======
+                <p className="subheadline">Replicate your digital self.</p>
+>>>>>>> Stashed changes
                 <button className="cta-button" onClick={() => window.location.href = '/auth'}>
                     Free – Start Now
                 </button>
@@ -177,7 +200,11 @@ export default function LandingPage() {
                             </button>
                             {activeQuestion === index && (
                                 <div className="faq-answer">
+<<<<<<< Updated upstream
                                     <p>{item.answer}</p>
+=======
+                                    <p className='ans-text'>{item.answer}</p>
+>>>>>>> Stashed changes
                                 </div>
                             )}
                         </div>

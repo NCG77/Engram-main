@@ -1,9 +1,12 @@
-@import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
+<<<<<<< Updated upstream
 .page-wrapper {
   position: fixed;
   top: 0;
@@ -37,6 +40,83 @@
   top: 0;
   height: 100%;
   transition: all 0.6s ease-in-out;
+=======
+:root {
+  --primary: #000000;
+  --primary-hover: #333333;
+  --secondary: #ffffff;
+  --text-dark: #000000;
+  --text-light: #ffffff;
+  --text-gray: #757575;
+  --bg-light: #ffffff;
+  --bg-dark: #000000;
+  --input-bg: #f0f0f0;
+  --input-border: #e0e0e0;
+  --error: #ff4d4d;
+  --success: #4caf50;
+  --shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+}
+
+.auth-page-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Cool gradient background */
+  background:
+    linear-gradient(135deg, rgba(25, 25, 25, 0.95), rgba(10, 10, 10, 0.9)),
+    radial-gradient(circle at top left, rgba(120, 120, 120, 0.5), transparent 70%),
+    radial-gradient(circle at bottom right, rgba(40, 40, 40, 0.5), transparent 70%);
+  background-size: cover;
+  padding: 20px;
+  position: relative;
+}
+
+/* Subtle texture overlay */
+.auth-page-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%23ffffff' fill-opacity='0.05' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.auth-container {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  min-height: 550px;
+  background-color: var(--bg-light);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.panel {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: var(--transition);
+  padding: 0 40px;
+}
+
+/* Sign Up Panel */
+.sign-up-container {
+>>>>>>> Stashed changes
   left: 0;
   width: 50%;
   opacity: 0;
@@ -49,11 +129,16 @@
   z-index: 5;
 }
 
+<<<<<<< Updated upstream
 .sign-in-container {
   position: absolute;
   top: 0;
   height: 100%;
   transition: all 0.6s ease-in-out;
+=======
+/* Sign In Panel */
+.sign-in-container {
+>>>>>>> Stashed changes
   left: 0;
   width: 50%;
   z-index: 2;
@@ -63,6 +148,7 @@
   transform: translateX(0);
 }
 
+<<<<<<< Updated upstream
 .container.right-panel-active .sign-in-container {
   transform: translateX(100%);
 }
@@ -121,10 +207,75 @@ input::placeholder {
 
 .btn:focus {
   outline: none;
+=======
+form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.auth-title {
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--text-dark);
+  margin-bottom: 30px;
+  letter-spacing: -0.5px;
+}
+
+.input-group {
+  width: 100%;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+input {
+  width: 100%;
+  padding: 15px;
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 12px;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: var(--text-dark);
+  transition: var(--transition);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+input::placeholder {
+  color: var(--text-gray);
+}
+
+.auth-btn {
+  background-color: var(--primary);
+  color: var(--text-light);
+  border: none;
+  border-radius: 12px;
+  padding: 14px 45px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 10px;
+}
+
+.auth-btn:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+>>>>>>> Stashed changes
 }
 
 .ghost {
   background-color: transparent;
+<<<<<<< Updated upstream
   border-color: #ffffff;
 }
 
@@ -135,6 +286,29 @@ input::placeholder {
   margin: 15px 0;
 }
 
+=======
+  border: 2px solid var(--text-light);
+}
+
+.ghost:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.forgot-password {
+  align-self: flex-start;
+  margin: 10px 0 20px;
+  color: var(--text-gray);
+  font-size: 14px;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.forgot-password:hover {
+  color: var(--primary);
+}
+
+/* Overlay */
+>>>>>>> Stashed changes
 .overlay-container {
   position: absolute;
   top: 0;
@@ -142,7 +316,11 @@ input::placeholder {
   width: 50%;
   height: 100%;
   overflow: hidden;
+<<<<<<< Updated upstream
   transition: transform 0.6s ease-in-out;
+=======
+  transition: var(--transition);
+>>>>>>> Stashed changes
   z-index: 100;
 }
 
@@ -151,14 +329,23 @@ input::placeholder {
 }
 
 .overlay {
+<<<<<<< Updated upstream
   background: linear-gradient(to right, rgb(43, 117, 255), rgb(75, 3, 158));
   color: #ffffff;
+=======
+  /* Sleek black and white gradient */
+  background: linear-gradient(135deg, #000000, #333333);
+>>>>>>> Stashed changes
   position: relative;
   left: -100%;
   height: 100%;
   width: 200%;
   transform: translateX(0);
+<<<<<<< Updated upstream
   transition: transform 0.6s ease-in-out;
+=======
+  transition: var(--transition);
+>>>>>>> Stashed changes
 }
 
 .overlay-container.right-panel-active .overlay {
@@ -177,7 +364,11 @@ input::placeholder {
   height: 100%;
   width: 50%;
   transform: translateX(0);
+<<<<<<< Updated upstream
   transition: transform 0.6s ease-in-out;
+=======
+  transition: var(--transition);
+>>>>>>> Stashed changes
 }
 
 .overlay-left {
@@ -197,6 +388,7 @@ input::placeholder {
   transform: translateX(20%);
 }
 
+<<<<<<< Updated upstream
 p {
   font-size: 14px;
   font-weight: 100;
@@ -222,4 +414,214 @@ p {
 
 .message-box.success {
   background-color: rgba(0, 255, 0, 0.1);
+=======
+.overlay-title {
+  font-weight: 700;
+  font-size: 32px;
+  color: var(--text-light);
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+
+p {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 30px;
+  max-width: 80%;
+  line-height: 1.6;
+}
+
+.sign-in-container p,
+.sign-up-container p {
+  color: var(--text-gray);
+  margin-bottom: 5px;
+}
+
+/* Message boxes */
+.message-box {
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.message-box.error {
+  background-color: rgba(255, 77, 77, 0.1);
+  color: var(--error);
+  border: 1px solid rgba(255, 77, 77, 0.2);
+}
+
+.message-box.success {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--success);
+  border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+/* Mobile toggle for small screens */
+.mobile-toggle {
+  display: none;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.toggle-link {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .auth-container {
+    max-width: 700px;
+  }
+
+  .overlay-title {
+    font-size: 28px;
+  }
+
+  .auth-title {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-container {
+    max-width: 500px;
+    min-height: 580px;
+  }
+
+  /* Hide overlay on mobile and switch to single panel view */
+  .overlay-container {
+    display: none;
+  }
+
+  .sign-up-container,
+  .sign-in-container {
+    width: 100%;
+    left: 0;
+    padding: 0 30px;
+  }
+
+  .sign-up-container.active {
+    transform: translateX(0);
+  }
+
+  /* Show the appropriate form based on state */
+  .sign-up-container {
+    display: none;
+  }
+
+  .sign-up-container.active {
+    display: block;
+  }
+
+  .sign-in-container {
+    display: none;
+  }
+
+  .sign-in-container.active {
+    display: block;
+  }
+
+  /* Show mobile toggle buttons */
+  .mobile-toggle {
+    display: block;
+  }
+
+  form {
+    padding: 30px 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .auth-page-wrapper {
+    padding: 15px;
+  }
+
+  .auth-container {
+    min-height: 500px;
+    border-radius: 16px;
+  }
+
+  .sign-up-container,
+  .sign-in-container {
+    padding: 0 20px;
+  }
+
+  .auth-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  input {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .auth-btn {
+    width: 100%;
+    padding: 12px 30px;
+  }
+
+  form {
+    padding: 20px 0;
+  }
+}
+
+@media (max-width: 400px) {
+  .auth-container {
+    min-height: 450px;
+  }
+
+  .sign-up-container,
+  .sign-in-container {
+    padding: 0 15px;
+  }
+
+  .auth-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .input-group {
+    margin-bottom: 15px;
+  }
+
+  input {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .message-box {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .auth-btn {
+    padding: 10px 25px;
+    font-size: 13px;
+  }
+
+  .forgot-password {
+    font-size: 13px;
+    margin: 5px 0 15px;
+  }
+
+  .mobile-toggle {
+    margin-top: 20px;
+  }
+
+  .mobile-toggle p,
+  .toggle-link {
+    font-size: 13px;
+  }
+>>>>>>> Stashed changes
 }

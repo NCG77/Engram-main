@@ -303,7 +303,7 @@ const NewPage = () => {
                     <div className="card" style={{ "--active-color": "#fef08a", position: "relative", overflow: "hidden" }}>
                         <PixelCanvasDOM
                             gap="1"
-                            speed="100"
+                            speed="1009"
                             colors="#fef08a, #fde047, #eab308"
                             noFocus={false}
                         />
