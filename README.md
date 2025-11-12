@@ -4,17 +4,17 @@ Engram is a personalized AI-powered chat application that reflects your personal
 
 ---
 
-## 🚀 Features
+## Features
 
-- 🔐 User authentication (Sign Up / Sign In)
-- 🧬 Personality extraction from diary entries
-- 💬 AI-powered chat with Groq’s LLaMA 3
-- 🌐 Secure token handling
-- 📦 Unified startup using one command
+- User authentication (Sign Up / Sign In)
+- Personality extraction from diary entries
+- AI-powered chat with Groq’s LLaMA 3
+- Secure token handling
+- Unified startup using one command
 
 ---
 
-## 🧑‍💻 Technologies Used
+## Technologies Used
 
 - **Frontend**: React, Styled Components
 - **Backend**: Node.js, Express, JWT, Groq API
@@ -80,7 +80,7 @@ This will:
 
 ---
 
-## 📌 Available Scripts
+## Available Scripts
 
 In the project root:
 
@@ -94,7 +94,7 @@ In the project root:
 
 ---
 
-## 💭 How It Works
+## How It Works
 
 1. User signs up or logs in.
 2. Diary entries (future feature) are used to extract a personality.
@@ -103,17 +103,13 @@ In the project root:
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 - **Port in use (EADDRINUSE)**: Make sure port 5000 (backend) isn't already occupied.
 - **Frontend script missing**: Ensure `"start"` exists in `engram-complete/package.json`.
 
-## 📄 License
+## License
 
 This project is open-source and free to use for educational and non-commercial purposes.
 
 ---
-
-## ❤️ Credits
-
-Built with LLaMA 3.
