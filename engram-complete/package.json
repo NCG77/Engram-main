@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "axios": "^1.8.4",
     "cloudflared": "^0.7.0",
     "dotenv": "^16.5.0",

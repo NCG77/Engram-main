@@ -1,6 +1,7 @@
 import React from "react";
 import './App.css';
 import { Routes, Route, Navigate } from "react-router-dom";
+import { Analytics } from '@vercel/analytics/react';
 import Auth from "./components/auth/Auth";
 import NewPage from './components/new_page/new_page';
 import ChatInterface from "./components/chat_page/ChatInterface";
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/diary" element={<DiaryApp />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <Analytics />
     </div>
   );
 };
