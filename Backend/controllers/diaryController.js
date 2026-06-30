@@ -2,6 +2,7 @@ const Diary = require("../models/diary");
 const Aura = require("../models/Aura");
 const { fork } = require("child_process");
 const path = require("path");
+const { upsertDiaryToPinecone } = require("../utils/pinecone");
 
 // Fallback personality
 const FALLBACK_PERSONALITY = {
@@ -98,6 +99,9 @@ const createDiaryEntry = async (req, res) => {
     const newEntry = new Diary({ userId, title, content });
     const savedEntry = await newEntry.save();
     console.log(`📔 [Diary] Entry saved: "${title}"`);
+
+    // Upsert to Pinecone vector DB for RAG
+    upsertDiaryToPinecone(savedEntry).catch(console.error);
 
     triggerAuraUpdate(userId);
 

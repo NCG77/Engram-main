@@ -1,6 +1,7 @@
 const Aura = require("../models/Aura");
 const User = require("../models/User");
 const https = require("https");
+const { queryRelevantDiaries } = require("../utils/pinecone");
 
 const CONFIG = {
   REQUEST_TIMEOUT: 30000, 
@@ -267,7 +268,16 @@ async function sendMessage(req, res) {
 
     const nameToUse = userDoc?.name || "User";
     const date = new Date().toLocaleDateString();
-    const systemPrompt = buildSystemPrompt(auraDoc.personality, nameToUse, date);
+    
+    // RAG: Fetch relevant diary entries from Pinecone
+    const relevantDiaries = await queryRelevantDiaries(userId, userMessage, 5);
+    let ragContext = "";
+    if (relevantDiaries && relevantDiaries.length > 0) {
+      ragContext = "\n\nRELEVANT PAST DIARY ENTRIES (Use these to answer the user if applicable):\n" + 
+        relevantDiaries.map(d => `[${new Date(d.createdAt).toLocaleDateString()}] ${d.title}\n${d.content}`).join("\n\n");
+    }
+
+    const systemPrompt = buildSystemPrompt(auraDoc.personality, nameToUse, date) + ragContext;
 
     const apiMessages = [{ role: "system", content: systemPrompt }];
 
