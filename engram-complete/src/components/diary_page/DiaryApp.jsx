@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getDiaryEntries, createDiaryEntry } from "../../api/index";
-
+import { getDiaryEntries, createDiaryEntry, deleteDiaryEntry } from "../../api/index";
 const Moon = ({ size = 18 }) => (
   <svg
     width={size}
@@ -17,7 +16,6 @@ const Moon = ({ size = 18 }) => (
     <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
   </svg>
 );
-
 const Sun = ({ size = 18 }) => (
   <svg
     width={size}
@@ -34,7 +32,6 @@ const Sun = ({ size = 18 }) => (
     <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
   </svg>
 );
-
 const ArrowLeft = ({ size = 18 }) => (
   <svg
     width={size}
@@ -51,7 +48,6 @@ const ArrowLeft = ({ size = 18 }) => (
     <path d="M12 19l-7-7 7-7" />
   </svg>
 );
-
 const Menu = ({ size = 18 }) => (
   <svg
     width={size}
@@ -69,7 +65,6 @@ const Menu = ({ size = 18 }) => (
     <path d="M3 18h18" />
   </svg>
 );
-
 const X = ({ size = 18 }) => (
   <svg
     width={size}
@@ -87,7 +82,6 @@ const X = ({ size = 18 }) => (
   </svg>
 );
 import "./DiaryApp.css";
-
 const ThemeToggle = ({ isDarkMode, toggleTheme }) => {
   return (
     <button
@@ -99,7 +93,6 @@ const ThemeToggle = ({ isDarkMode, toggleTheme }) => {
     </button>
   );
 };
-
 const MobileSidebarToggle = ({ isSidebarVisible, toggleSidebar }) => {
   return (
     <button
@@ -111,12 +104,10 @@ const MobileSidebarToggle = ({ isSidebarVisible, toggleSidebar }) => {
     </button>
   );
 };
-
-const DiaryForm = ({ onSave, selectedEntry, onBack, isDarkMode }) => {
+const DiaryForm = ({ onSave, onDelete, selectedEntry, onBack, isDarkMode }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isViewing, setIsViewing] = useState(false);
-
   const formatDateTime = (dateStr) => {
     const date = new Date(dateStr);
     const day = date.getDate().toString().padStart(2, "0");
@@ -126,7 +117,6 @@ const DiaryForm = ({ onSave, selectedEntry, onBack, isDarkMode }) => {
     const minutes = date.getMinutes().toString().padStart(2, "0");
     return `${day}-${month}-${year} ${hours}:${minutes}`;
   };
-
   useEffect(() => {
     if (selectedEntry) {
       setTitle(selectedEntry.title || "");
@@ -138,7 +128,6 @@ const DiaryForm = ({ onSave, selectedEntry, onBack, isDarkMode }) => {
       setContent("");
     }
   }, [selectedEntry]);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!content.trim()) return;
@@ -146,11 +135,14 @@ const DiaryForm = ({ onSave, selectedEntry, onBack, isDarkMode }) => {
     setTitle("");
     setContent("");
   };
-
   const handleBackClick = () => {
     onBack();
   };
-
+  const handleDeleteClick = () => {
+    if (window.confirm("Are you sure you want to delete this diary entry? This will also remove its data from your AI's memory.")) {
+      onDelete(selectedEntry._id);
+    }
+  };
   if (isViewing && selectedEntry) {
     return (
       <div
@@ -160,18 +152,22 @@ const DiaryForm = ({ onSave, selectedEntry, onBack, isDarkMode }) => {
           <ArrowLeft size={16} />
           <span>Back</span>
         </button>
-
         <h1 className="entry-title">{selectedEntry.title || "Untitled"}</h1>
-
         <div className="entry-date">
           {formatDateTime(selectedEntry.createdAt)}
         </div>
-
         <div className="entry-content">{selectedEntry.content}</div>
+        <button 
+          onClick={handleDeleteClick} 
+          className="submit-button" 
+          style={{ backgroundColor: '#ff4d4f', marginTop: '20px' }} 
+          title="Delete diary entry"
+        >
+          Delete Entry
+        </button>
       </div>
     );
   }
-
   return (
     <form
       className={`diary-form ${isDarkMode ? "dark-mode" : "light-mode"}`}
@@ -185,7 +181,6 @@ const DiaryForm = ({ onSave, selectedEntry, onBack, isDarkMode }) => {
         className="diary-title-input"
         maxLength="100"
       />
-
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
@@ -195,14 +190,12 @@ const DiaryForm = ({ onSave, selectedEntry, onBack, isDarkMode }) => {
         spellCheck="true"
         required
       />
-
       <button type="submit" className="submit-button" title="Submit diary entry">
         Submit Entry
       </button>
     </form>
   );
 };
-
 const DiarySidebar = ({ entries, onSelectEntry, isDarkMode }) => {
   const formatDateTime = (dateStr) => {
     const date = new Date(dateStr);
@@ -213,13 +206,11 @@ const DiarySidebar = ({ entries, onSelectEntry, isDarkMode }) => {
     const minutes = date.getMinutes().toString().padStart(2, "0");
     return `${day}-${month}-${year} ${hours}:${minutes}`;
   };
-
   return (
     <div
       className={`diary-entries-list ${isDarkMode ? "dark-mode" : "light-mode"}`}
     >
       <h1 className="entries-title">My Diary Entries</h1>
-
       {entries.length === 0 ? (
         <p className="no-entries-message">No entries yet. Start writing!</p>
       ) : (
@@ -237,7 +228,6 @@ const DiarySidebar = ({ entries, onSelectEntry, isDarkMode }) => {
     </div>
   );
 };
-
 const DiaryApp = () => {
   const navigate = useNavigate();
   const [entries, setEntries] = useState([]);
@@ -245,7 +235,6 @@ const DiaryApp = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
-
   useEffect(() => {
     const checkMobileView = () => {
       const isMobile = window.innerWidth <= 768;
@@ -254,12 +243,10 @@ const DiaryApp = () => {
         setIsSidebarVisible(false);
       }
     };
-
     checkMobileView();
     window.addEventListener("resize", checkMobileView);
     return () => window.removeEventListener("resize", checkMobileView);
   }, []);
-
   useEffect(() => {
     const savedTheme = localStorage.getItem("engram-theme");
     if (savedTheme === "light") {
@@ -271,7 +258,6 @@ const DiaryApp = () => {
       document.body.classList.add("dark-mode");
       document.body.classList.remove("light-mode");
     }
-
     (async () => {
       try {
         const data = await getDiaryEntries();
@@ -284,7 +270,6 @@ const DiaryApp = () => {
       }
     })();
   }, []);
-
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
     if (isDarkMode) {
@@ -297,11 +282,9 @@ const DiaryApp = () => {
       document.body.classList.remove("light-mode");
     }
   };
-
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
   };
-
   const handleSaveEntry = async ({ title, content }) => {
     try {
       const token = localStorage.getItem("token");
@@ -321,24 +304,38 @@ const DiaryApp = () => {
         },
       );
       const auraData = await auraRes.json();
-      console.log("🧠 Updated aura/personality:", auraData.personality);
     } catch (err) {
       console.error("Failed to create entry or update aura", err);
       alert("Something went wrong. Please try again.");
     }
   };
-
   const handleSelectEntry = (entry) => {
     setSelectedEntry(entry);
     if (isMobileView) {
       setIsSidebarVisible(false);
     }
   };
-
   const handleBack = () => {
     setSelectedEntry(null);
   };
-
+  const handleDeleteEntry = async (id) => {
+    try {
+      await deleteDiaryEntry(id);
+      setEntries(entries.filter(e => e._id !== id));
+      setSelectedEntry(null);
+      if (isMobileView) {
+        setIsSidebarVisible(false);
+      }
+      const token = localStorage.getItem("token");
+      fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/aura/update`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      }).catch(console.error);
+    } catch (err) {
+      console.error("Failed to delete entry", err);
+      alert("Failed to delete entry. Please try again.");
+    }
+  };
   return (
     <div
       className={`diary-app-container ${isDarkMode ? "dark-mode" : "light-mode"} ${isMobileView ? "mobile-view" : ""}`}
@@ -352,14 +349,12 @@ const DiaryApp = () => {
         <ArrowLeft size={18} />
       </button>
       <ThemeToggle isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
-
       {isMobileView && (
         <MobileSidebarToggle
           isSidebarVisible={isSidebarVisible}
           toggleSidebar={toggleSidebar}
         />
       )}
-
       {isMobileView ? (
         <>
           <div
@@ -371,12 +366,12 @@ const DiaryApp = () => {
               isDarkMode={isDarkMode}
             />
           </div>
-
           <div
             className={`diary-main-content ${!isSidebarVisible ? "visible" : "hidden"}`}
           >
             <DiaryForm
               onSave={handleSaveEntry}
+              onDelete={handleDeleteEntry}
               selectedEntry={selectedEntry}
               onBack={handleBack}
               isDarkMode={isDarkMode}
@@ -392,10 +387,10 @@ const DiaryApp = () => {
               isDarkMode={isDarkMode}
             />
           </div>
-
           <div className="diary-main-content">
             <DiaryForm
               onSave={handleSaveEntry}
+              onDelete={handleDeleteEntry}
               selectedEntry={selectedEntry}
               onBack={handleBack}
               isDarkMode={isDarkMode}
@@ -406,5 +401,4 @@ const DiaryApp = () => {
     </div>
   );
 };
-
 export default DiaryApp;

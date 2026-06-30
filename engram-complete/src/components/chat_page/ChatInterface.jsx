@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDiaryEntries } from "../../api/index";
 import "./ChatInterface.css";
-
 const ChatInterface = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -22,10 +21,8 @@ const ChatInterface = () => {
   const [diaryEntries, setDiaryEntries] = useState([]);
   const [insufficientEntries, setInsufficientEntries] = useState(false);
   const [messageRatings, setMessageRatings] = useState({});
-
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
-
   const getBaseUrl = () => {
     let url;
     try {
@@ -36,7 +33,6 @@ const ChatInterface = () => {
     return url || "http://localhost:5000";
   };
   const baseUrl = getBaseUrl();
-
   useEffect(() => {
     const checkDiaryEntries = async () => {
       try {
@@ -50,20 +46,16 @@ const ChatInterface = () => {
         setInsufficientEntries(true);
       }
     };
-
     checkDiaryEntries();
   }, []);
-
   useEffect(() => {
     const fetchUserPersonality = async () => {
       const token = localStorage.getItem("token");
-
       if (!token) {
         console.warn("No token found. User must log in.");
         setError("Please log in to access the chat. <a href='/auth' style='color: #007bff; cursor: pointer;'>Click here to login</a>");
         return;
       }
-
       try {
         const response = await fetch(`${baseUrl}/api/aura`, {
           method: "GET",
@@ -72,12 +64,10 @@ const ChatInterface = () => {
             "Content-Type": "application/json",
           },
         });
-
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.indexOf("application/json") === -1) {
           throw new Error("Server returned HTML. Check backend connection.");
         }
-
         if (!response.ok) {
           if (response.status === 404) {
             setError(
@@ -91,7 +81,6 @@ const ChatInterface = () => {
           }
           return;
         }
-
         const data = await response.json();
         if (data && data.personality) {
           setPersonality(data.personality);
@@ -104,15 +93,12 @@ const ChatInterface = () => {
         setError("Could not load your digital twin. Server might be down.");
       }
     };
-
     fetchUserPersonality();
   }, [baseUrl, navigate]);
-
   useEffect(() => {
     const fetchHistory = async () => {
       const token = localStorage.getItem("token");
       if (!token) return;
-
       try {
         const response = await fetch(`${baseUrl}/api/sessions`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -125,18 +111,14 @@ const ChatInterface = () => {
         console.error("Failed to load chat history:", err);
       }
     };
-
     fetchHistory();
   }, [baseUrl]);
-
   useEffect(() => {
     scrollToBottom();
   }, [messages, loading]);
-
   useEffect(() => {
     document.body.setAttribute("data-theme", isDarkMode ? "dark" : "light");
   }, [isDarkMode]);
-
   useEffect(() => {
     const ratings = Object.values(messageRatings);
     if (ratings.length > 0) {
@@ -145,7 +127,6 @@ const ChatInterface = () => {
       setAccuracy({ overallScore: correctCount / totalRatings });
     }
   }, [messageRatings]);
-
   const scrollToBottom = () => {
     setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -154,23 +135,18 @@ const ChatInterface = () => {
       }
     }, 100);
   };
-
   const sendMessage = async () => {
     if (showWelcome) setShowWelcome(false);
     if (input.trim() === "" || !personality) return;
-
     const userText = input;
     const userMessage = { role: "user", content: userText };
-
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setLoading(true);
     setError(null);
     setTimeout(() => scrollToBottom(), 100);
-
     try {
       const token = localStorage.getItem("token");
-
       const chatResponse = await fetch(`${baseUrl}/api/chat/send`, {
         method: "POST",
         headers: {
@@ -182,12 +158,10 @@ const ChatInterface = () => {
           history: messages.map((m) => ({ role: m.role, content: m.content })),
         }),
       });
-
       if (!chatResponse.ok) {
         const errorData = await chatResponse.json();
         throw new Error(errorData.error || "Failed to get AI response");
       }
-
       const chatData = await chatResponse.json();
       const botMessage = {
         role: "assistant",
@@ -195,9 +169,7 @@ const ChatInterface = () => {
       };
       const updatedMessages = [...messages, userMessage, botMessage];
       setMessages(updatedMessages);
-
       const currentTokens = updatedMessages.length * 12;
-
       if (!activeSessionId) {
         const title =
           userText.substring(0, 22) + (userText.length > 22 ? "..." : "");
@@ -213,7 +185,6 @@ const ChatInterface = () => {
             tokens: currentTokens,
           }),
         });
-
         if (dbResponse.ok) {
           const savedSession = await dbResponse.json();
           setActiveSessionId(savedSession?._id);
@@ -234,7 +205,6 @@ const ChatInterface = () => {
             }),
           },
         );
-
         if (dbResponse.ok) {
           const updatedSession = await dbResponse.json();
           setChatHistory((prev) =>
@@ -258,14 +228,12 @@ const ChatInterface = () => {
       setTimeout(() => scrollToBottom(), 100);
     }
   };
-
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
   };
-
   const copyToClipboard = async (text, index) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -275,20 +243,17 @@ const ChatInterface = () => {
       console.error("Failed to copy text: ", err);
     }
   };
-
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
     setIsDarkMode(newTheme);
     localStorage.setItem("engram-theme", newTheme ? "dark" : "light");
   };
-
   const handleRateMessage = (index, rating) => {
     setMessageRatings(prev => ({
       ...prev,
       [index]: prev[index] === rating ? null : rating
     }));
   };
-
   const startNewConversation = () => {
     setMessages([]);
     setInput("");
@@ -298,28 +263,26 @@ const ChatInterface = () => {
     setIsSidebarOpen(false);
     setActiveSessionId(null);
   };
-
   const loadConversation = (sessionToLoad) => {
     setMessages(sessionToLoad?.messages || []);
     setActiveSessionId(sessionToLoad?._id);
     setShowWelcome(false);
     setIsSidebarOpen(false);
   };
-
   const deleteConversation = async (e, sessionId) => {
-    e.stopPropagation();
-
+    if (e) e.stopPropagation();
+    if (!window.confirm("Are you sure you want to delete this chat session?")) {
+      return;
+    }
     setChatHistory((prev) =>
       prev.filter((session) => session._id !== sessionId),
     );
-
     if (activeSessionId === sessionId) {
       setMessages([]);
       setInput("");
       setShowWelcome(true);
       setActiveSessionId(null);
     }
-
     try {
       const token = localStorage.getItem("token");
       await fetch(`${baseUrl}/api/sessions/${sessionId}`, {
@@ -330,7 +293,6 @@ const ChatInterface = () => {
       console.error("Failed to delete session from DB:", err);
     }
   };
-
   if (insufficientEntries) {
     return (
       <div className={`app-container ${isDarkMode ? "dark" : "light"}`}>
@@ -361,7 +323,6 @@ const ChatInterface = () => {
       </div>
     );
   }
-
   if (error && !personality) {
     return (
       <div className={`app-container ${isDarkMode ? "dark" : "light"}`}>
@@ -389,7 +350,6 @@ const ChatInterface = () => {
       </div>
     );
   }
-
   if (!personality) {
     return (
       <div className={`app-container ${isDarkMode ? "dark" : "light"}`}>
@@ -397,7 +357,6 @@ const ChatInterface = () => {
       </div>
     );
   }
-
   return (
     <div className={`app-container ${isDarkMode ? "dark" : "light"}`} style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
       <div
@@ -405,7 +364,6 @@ const ChatInterface = () => {
         onClick={() => setIsSidebarOpen(false)}
         role="presentation"
       ></div>
-
       <aside className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
         <div className="sidebar-header">
           <h2>Conversations</h2>
@@ -443,7 +401,6 @@ const ChatInterface = () => {
             </div>
           </div>
         </div>
-
         <div className="sidebar-content">
           {!activeSessionId && (
             <div className="history-item active">
@@ -475,7 +432,6 @@ const ChatInterface = () => {
               </div>
             </div>
           )}
-
           {chatHistory.map((session) => (
             <div
               key={session._id}
@@ -530,7 +486,6 @@ const ChatInterface = () => {
               </button>
             </div>
           ))}
-
           <button 
             className="new-chat-btn" 
             onClick={startNewConversation}
@@ -539,14 +494,12 @@ const ChatInterface = () => {
             <span>+ New Conversation</span>
           </button>
         </div>
-
         <div className="sidebar-footer">
           <p className="accuracy-text">
             Accuracy: {(accuracy.overallScore * 100).toFixed(1)}%
           </p>
         </div>
       </aside>
-
       <main className="main-chat">
         <header className="top-bar">
           <div className="top-bar-left">
@@ -594,6 +547,16 @@ const ChatInterface = () => {
             <h1>Engram</h1>
           </div>
           <div className="top-bar-right ">
+            {activeSessionId && (
+              <button
+                className="action-btn-primary"
+                style={{ backgroundColor: '#ff4d4f', color: 'white', marginRight: '10px', fontSize: '0.85rem' }}
+                onClick={(e) => deleteConversation(e, activeSessionId)}
+                title="Delete Chat Session"
+              >
+                Delete Chat
+              </button>
+            )}
             <button
               className="diary-btn"
               onClick={() => navigate("/diary")}
@@ -656,7 +619,6 @@ const ChatInterface = () => {
             </button>
           </div>
         </header>
-
         <div className="chat-scroll-area">
           <div className="chat-messages">
             {messages.length === 0 && showWelcome && (
@@ -684,7 +646,6 @@ const ChatInterface = () => {
                 </div>
               </div>
             )}
-
             {messages.map((message, index) => (
               <div key={index} className={`message-wrapper ${message.role}`}>
                 <div className="message-card">
@@ -695,9 +656,7 @@ const ChatInterface = () => {
                       </span>
                     </div>
                   )}
-
                   <div className="message-content">{message.content}</div>
-
                   {message.role === "assistant" && (
                     <div className="message-actions">
                       <button 
@@ -784,7 +743,6 @@ const ChatInterface = () => {
                 </div>
               </div>
             ))}
-
             {loading && (
               <div className="message-wrapper assistant">
                 <div className="message-card">
@@ -804,7 +762,6 @@ const ChatInterface = () => {
             <div ref={messagesEndRef} className="messages-end" />
           </div>
         </div>
-
         <div className="floating-input-wrapper">
           <div className="input-box">
             <textarea
@@ -845,5 +802,4 @@ const ChatInterface = () => {
     </div>
   );
 };
-
 export default ChatInterface;

@@ -1,7 +1,6 @@
-// models/Accuracy.js
-const mongoose = require("mongoose"); // ← import mongoose
-const { Schema } = mongoose; // ← extract Schema
 
+const mongoose = require("mongoose"); 
+const { Schema } = mongoose; 
 const AccuracySchema = new Schema({
     date: {
         type: Date,
@@ -20,5 +19,4 @@ const AccuracySchema = new Schema({
         neuroticism: Number,
     },
 });
-
 module.exports = mongoose.model("Accuracy", AccuracySchema);

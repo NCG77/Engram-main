@@ -1,10 +1,8 @@
 const https = require("https");
-
-// 1️⃣ For JSON‑only flows (aura extractor)
 function callGroqJSON(messages, apiKey) {
   return new Promise((resolve, reject) => {
     const payload = JSON.stringify({
-      model: "mistral-saba-24b",
+      model: "llama-3.1-8b-instant",
       messages,
       temperature: 0.7,
     });
@@ -25,7 +23,6 @@ function callGroqJSON(messages, apiKey) {
           if (res.statusCode >= 200 && res.statusCode < 300) {
             try {
               const json = JSON.parse(data);
-              // strip code fences, parse inner JSON
               let content = json.choices[0].message.content
                 .replace(/```json/g, "")
                 .replace(/```/g, "")
@@ -50,12 +47,10 @@ function callGroqJSON(messages, apiKey) {
     req.end();
   });
 }
-
-// 2️⃣ For conversational chat (raw string)
 function callGroqChat(messages, apiKey) {
   return new Promise((resolve, reject) => {
     const payload = JSON.stringify({
-      model: "mistral-saba-24b",
+      model: "llama-3.1-8b-instant",
       messages,
       temperature: 0.7,
     });
@@ -76,7 +71,6 @@ function callGroqChat(messages, apiKey) {
           if (res.statusCode >= 200 && res.statusCode < 300) {
             try {
               const json = JSON.parse(data);
-              console.log("Groq respnse:", json);
               const content = json.choices[0].message.content.trim();
               return resolve(content);
             } catch (e) {
@@ -97,5 +91,4 @@ function callGroqChat(messages, apiKey) {
     req.end();
   });
 }
-
 module.exports = { callGroqJSON, callGroqChat };

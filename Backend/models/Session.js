@@ -1,12 +1,11 @@
-// models/Session.js
-const mongoose = require("mongoose");
 
+const mongoose = require("mongoose");
 const sessionSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true, // Links the session to the logged-in user
+      required: true, 
     },
     title: {
       type: String,
@@ -24,6 +23,5 @@ const sessionSchema = new mongoose.Schema(
     ],
   },
   { timestamps: true },
-); // Automatically handles createdAt and updatedAt
-
+); 
 module.exports = mongoose.model("Session", sessionSchema);

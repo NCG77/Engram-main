@@ -1,7 +1,6 @@
-// models/Review.js
+
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-
 const ReviewSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     ratings: {
@@ -15,5 +14,4 @@ const ReviewSchema = new Schema({
     comments: { type: String },
     createdAt: { type: Date, default: Date.now },
 });
-
 module.exports = mongoose.model("Review", ReviewSchema);

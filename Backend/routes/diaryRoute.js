@@ -2,13 +2,11 @@ const express = require("express");
 const {
   createDiaryEntry,
   getDiaryEntries,
+  deleteDiaryEntry,
   getAura,
 } = require("../controllers/diaryController");
 const authenticateUser = require("../middleware/authmiddleware");
-
 const router = express.Router();
-
-// POST /api/diary/create (requires login)
 router.post(
   "/create",
   authenticateUser,
@@ -18,8 +16,6 @@ router.post(
   },
   createDiaryEntry,
 );
-
-// GET /api/diary (requires login)
 router.get(
   "/",
   authenticateUser,
@@ -29,5 +25,9 @@ router.get(
   },
   getDiaryEntries,
 );
-
+router.delete(
+  "/:id",
+  authenticateUser,
+  deleteDiaryEntry
+);
 module.exports = router;

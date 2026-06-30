@@ -15,8 +15,7 @@
     "concurrently": "^9.1.2"
   },
   "dependencies": {
-    "groq": "^3.85.1",
+    "groq": "^6.2.0",
     "lucide-react": "^0.300.0"
   }
 }
-

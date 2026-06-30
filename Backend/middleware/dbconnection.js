@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const checkDatabaseConnection = (req, res, next) => {
   if (mongoose.connection.readyState !== 1) {
     console.warn("⚠️ Database not connected. Current state:", mongoose.connection.readyState);
@@ -9,5 +8,4 @@ const checkDatabaseConnection = (req, res, next) => {
   }
   next();
 };
-
 module.exports = checkDatabaseConnection;

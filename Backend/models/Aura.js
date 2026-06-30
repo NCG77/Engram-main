@@ -1,4 +1,4 @@
-// models/Aura.js
+
 const mongoose = require("mongoose");
 const auraSchema = new mongoose.Schema(
   {

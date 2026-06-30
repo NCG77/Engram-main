@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./styles.css";
-
 const Auth = () => {
   const [signIn, toggle] = useState(true);
   const [name, setName] = useState("");
@@ -12,24 +11,19 @@ const Auth = () => {
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [isSigningUp, setIsSigningUp] = useState(false);
   const navigate = useNavigate();
-
   const clearMessage = () => {
     setMessage("");
     setMessageType("");
   };
-
   const handleSignUp = async (e) => {
     e.preventDefault();
     clearMessage();
-
     if (!name || !email || !password) {
       setMessage("Please fill out all fields.");
       setMessageType("error");
       return;
     }
-
     setIsSigningUp(true);
-
     try {
       const res = await fetch(
         `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/users/register`,
@@ -40,7 +34,6 @@ const Auth = () => {
         }
       );
       const data = await res.json();
-
       if (res.ok) {
         setMessage("Registration successful! Please sign in.");
         setMessageType("success");
@@ -60,19 +53,15 @@ const Auth = () => {
       setIsSigningUp(false);
     }
   };
-
   const handleSignIn = async (e) => {
     e.preventDefault();
     clearMessage();
-
     if (!email || !password) {
       setMessage("Please enter both email and password.");
       setMessageType("error");
       return;
     }
-
     setIsSigningIn(true);
-
     try {
       const response = await fetch(
         `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/users/login`,
@@ -83,7 +72,6 @@ const Auth = () => {
         }
       );
       const data = await response.json();
-
       if (response.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("userName", data.name);
@@ -100,7 +88,6 @@ const Auth = () => {
       setIsSigningIn(false);
     }
   };
-
   return (
     <div className="auth-page-wrapper">
       <div className="auth-container">
@@ -153,7 +140,6 @@ const Auth = () => {
             </div>
           </form>
         </div>
-
         <div className={`panel sign-in-container ${signIn ? "active" : ""}`}>
           <form onSubmit={handleSignIn}>
             {message && <div className={`message-box ${messageType}`}>{message}</div>}
@@ -195,7 +181,6 @@ const Auth = () => {
             </div>
           </form>
         </div>
-
         <div className={`overlay-container ${!signIn ? "right-panel-active" : ""}`}>
           <div className="overlay">
             <div className="overlay-panel overlay-left">
@@ -208,7 +193,6 @@ const Auth = () => {
                 Sign In
               </button>
             </div>
-
             <div className="overlay-panel overlay-right">
               <h1 className="overlay-title">Welcome Back</h1>
               <p>Access your Engram account and continue your journey</p>
@@ -225,5 +209,4 @@ const Auth = () => {
     </div>
   );
 };
-
 export default Auth;
