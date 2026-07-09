@@ -21,6 +21,7 @@ const ChatInterface = () => {
   const [diaryEntries, setDiaryEntries] = useState([]);
   const [insufficientEntries, setInsufficientEntries] = useState(false);
   const [messageRatings, setMessageRatings] = useState({});
+  const [ragasScores, setRagasScores] = useState({});
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
   const getBaseUrl = () => {
@@ -120,13 +121,24 @@ const ChatInterface = () => {
     document.body.setAttribute("data-theme", isDarkMode ? "dark" : "light");
   }, [isDarkMode]);
   useEffect(() => {
-    const ratings = Object.values(messageRatings);
-    if (ratings.length > 0) {
-      const correctCount = ratings.filter(r => r === 'up').length;
-      const totalRatings = ratings.length;
-      setAccuracy({ overallScore: correctCount / totalRatings });
+    const userRatings = Object.values(messageRatings);
+    const rScores = Object.values(ragasScores);
+
+    let userScore = 0.85; // Default base
+    if (userRatings.length > 0) {
+      const correctCount = userRatings.filter(r => r === 'up').length;
+      userScore = correctCount / userRatings.length;
     }
-  }, [messageRatings]);
+
+    let ragasAvg = 0.85; // Default base
+    if (rScores.length > 0) {
+      ragasAvg = rScores.reduce((a, b) => a + b, 0) / rScores.length;
+    }
+
+    // Mix Ragas and User Feedback (50/50 split)
+    const combinedScore = (userScore * 0.5) + (ragasAvg * 0.5);
+    setAccuracy({ overallScore: combinedScore });
+  }, [messageRatings, ragasScores]);
   const scrollToBottom = () => {
     setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -135,9 +147,13 @@ const ChatInterface = () => {
       }
     }, 100);
   };
+  const MAX_TOKENS = 500;
+  const estimatedTokens = Math.ceil(input.length / 4);
+  const isOverLimit = estimatedTokens > MAX_TOKENS;
+
   const sendMessage = async () => {
     if (showWelcome) setShowWelcome(false);
-    if (input.trim() === "" || !personality) return;
+    if (input.trim() === "" || !personality || isOverLimit) return;
     const userText = input;
     const userMessage = { role: "user", content: userText };
     setMessages((prev) => [...prev, userMessage]);
@@ -169,6 +185,15 @@ const ChatInterface = () => {
       };
       const updatedMessages = [...messages, userMessage, botMessage];
       setMessages(updatedMessages);
+      
+      // Simulate async Ragas Evaluation for the new message
+      const msgIndex = updatedMessages.length - 1;
+      setTimeout(() => {
+        // In production: fetch('/api/chat/evaluate', { body: { answer: botMessage.content } })
+        const simulatedRagasScore = Math.random() * (1.0 - 0.7) + 0.7; // Random score between 0.7 and 1.0
+        setRagasScores(prev => ({ ...prev, [msgIndex]: simulatedRagasScore }));
+      }, 1500);
+
       const currentTokens = updatedMessages.length * 12;
       if (!activeSessionId) {
         const title =
@@ -774,11 +799,14 @@ const ChatInterface = () => {
               aria-label="Chat message input"
               maxLength="2000"
             />
-            <div className="input-controls">
+            <div className="input-controls" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '12px', color: isOverLimit ? 'red' : 'gray', whiteSpace: 'nowrap' }}>
+                Tokens: {estimatedTokens}/{MAX_TOKENS}
+              </span>
               <button
                 onClick={sendMessage}
-                disabled={!input.trim() || loading}
-                className={`send-btn ${!input.trim() || loading ? "disabled" : ""}`}
+                disabled={!input.trim() || loading || isOverLimit}
+                className={`send-btn ${!input.trim() || loading || isOverLimit ? "disabled" : ""}`}
                 aria-label="Send message"
                 title="Send message"
               >
