@@ -73,33 +73,16 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: 
-        /* Thin scanlines */
-        repeating-linear-gradient(
-            0deg,
-            rgba(255, 255, 255, 0.02) 0px,
-            rgba(255, 255, 255, 0.02) 1px,
-            transparent 1px,
-            transparent 3px
-        ),
-        /* Grid overlay */
-        linear-gradient(90deg, rgba(100, 150, 200, 0.05) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(100, 150, 200, 0.05) 1px, transparent 1px);
-    background-size: 100% 3px, 40px 40px, 40px 40px;
-    background-position: 0 0, 0 0, 0 0;
+    background-image: radial-gradient(var(--glow-color) 15%, transparent 16%);
+    background-size: 20px 20px;
+    -webkit-mask-image: linear-gradient(to right, black 0%, transparent 15%, transparent 85%, black 100%);
+    mask-image: linear-gradient(to right, black 0%, transparent 15%, transparent 85%, black 100%);
     pointer-events: none;
     z-index: 0;
-    animation: scanlines 8s linear infinite;
+    animation: glow-pulse 6s ease-in-out infinite;
 }
 
-@keyframes scanlines {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: 0 10px;
-    }
-}
+/* scanlines animation removed since we replaced the background */
 
 @keyframes float-slow {
     0%, 100% {
