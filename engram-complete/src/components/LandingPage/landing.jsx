@@ -113,7 +113,7 @@ export default function LandingPage() {
         </nav>
       </header>
       <div className="background-patterns">
-        <img src={dotPattern} alt="dotpattern" className="pattern-image" />
+        <img src={dotPattern} alt="dotpattern" className="pattern-image" fetchpriority="high" decoding="async" />
       </div>
       <main className="main-content">
         <h1 className="headline">Engram</h1>
@@ -135,7 +135,7 @@ export default function LandingPage() {
       >
         <div className="concept-cards">
           <div className="concept-card">
-            <img src={diary} alt="diary" className="card-image" />
+            <img src={diary} alt="diary" className="card-image" loading="lazy" decoding="async" />
           </div>
         </div>
         <div className="concept-header">
@@ -167,6 +167,8 @@ export default function LandingPage() {
               src={OCEAN}
               alt="OCEAN personality model"
               className="card-image"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         </div>
@@ -174,7 +176,7 @@ export default function LandingPage() {
       <section className="concept-section section-three" ref={sectionThreeRef}>
         <div className="concept-cards">
           <div className="concept-card">
-            <img src={review} alt="Test and review" className="card-image" />
+            <img src={review} alt="Test and review" className="card-image" loading="lazy" decoding="async" />
           </div>
         </div>
         <div className="concept-header">
