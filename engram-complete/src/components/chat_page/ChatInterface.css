@@ -4,11 +4,11 @@
 }
 
 html {
-  /* Support for mobile safe areas (notches, taskbars) */
+  
   viewport-fit: cover;
 }
 
-/* Base Theme Variables */
+
 :root {
   --bg-sidebar: #121212;
   --bg-main: #18181a;
@@ -23,11 +23,11 @@ html {
   --text-secondary: #a1a1aa;
   --text-muted: #71717a;
 
-  --accent-color: #2d5e56; /* Teal from the send button */
+  --accent-color: #2d5e56; 
   --accent-hover: #3b7b70;
 }
 
-/* Light Mode Overrides (if toggled) */
+
 .light {
   --bg-sidebar: #f4f4f5;
   --bg-main: #ffffff;
@@ -41,7 +41,7 @@ html {
   --text-muted: #a1a1aa;
 }
 
-/* Layout Structure */
+
 .app-container {
   display: flex;
   height: 100vh;
@@ -54,7 +54,7 @@ html {
   position: relative;
 }
 
-/* Sidebar */
+
 .sidebar {
   width: 260px;
   background-color: var(--bg-sidebar);
@@ -184,7 +184,7 @@ html {
   margin: 0;
 }
 
-/* Sidebar Overlay (Mobile Only) */
+
 .sidebar-overlay {
   display: none;
   position: absolute;
@@ -198,7 +198,7 @@ html {
   transition: opacity 0.3s ease;
 }
 
-/* Main Chat Area */
+
 .main-chat {
   flex: 1;
   display: flex;
@@ -207,7 +207,7 @@ html {
   min-width: 0;
 }
 
-/* Top Bar */
+
 .top-bar {
   height: 60px;
   display: flex;
@@ -228,13 +228,13 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px; /* Perfectly spaces the icon and text */
+  gap: 8px; 
   background-color: transparent;
   border: 1px solid var(--border-strong);
   color: var(--text-primary);
   cursor: pointer;
   padding: 6px 14px;
-  border-radius: 20px; /* Pill shape makes it look sleeker */
+  border-radius: 20px; 
   font-size: 0.85rem;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -298,7 +298,7 @@ html {
   display: none;
 }
 
-/* Chat Scroll Area */
+
 .chat-scroll-area {
   flex: 1;
   overflow-y: auto;
@@ -322,7 +322,7 @@ html {
   gap: 24px;
 }
 
-/* Empty State */
+
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -361,7 +361,7 @@ html {
   color: var(--text-secondary);
 }
 
-/* Message Cards */
+
 .message-wrapper {
   display: flex;
   width: 100%;
@@ -443,7 +443,7 @@ html {
   color: var(--accent-color);
 }
 
-/* Thinking Indicator */
+
 .thinking-dots {
   display: flex;
   gap: 4px;
@@ -476,7 +476,7 @@ html {
   }
 }
 
-/* Floating Input */
+
 .floating-input-wrapper {
   position: absolute;
   bottom: calc(24px + env(safe-area-inset-bottom, 0px));
@@ -569,7 +569,7 @@ html {
   cursor: not-allowed;
 }
 
-/* Error/Loading Overrides */
+
 .error-message,
 .loading-message {
   display: flex;
@@ -590,15 +590,13 @@ html {
   cursor: pointer;
 }
 
-/* ==================================================
-   MOBILE RESPONSIVENESS
-   ================================================== */
 
-/* Tablet (768px and below) */
+
+
 @media (max-width: 768px) {
   :root {
     --text-primary: #e4e4e7;
-    font-size: 15px; /* Increase base font size for better readability */
+    font-size: 15px; 
   }
 
   .app-container {
@@ -777,7 +775,7 @@ html {
   }
 }
 
-/* Small Mobile (480px and below) */
+
 @media (max-width: 480px) {
   :root {
     font-size: 14px;
@@ -837,13 +835,13 @@ html {
     height: calc(100px + env(safe-area-inset-bottom, 0px));
   }
   
-  /* Ensure input box stays above taskbar */
+  
   .input-box {
     max-height: calc(100vh - 60px - env(safe-area-inset-bottom, 0px));
   }
 }
 
-/* Extra Small Mobile (320px and below) */
+
 @media (max-width: 320px) {
   .welcome-title {
     font-size: 1.3rem;
@@ -863,7 +861,7 @@ html {
   }
 }
 
-/* Diary Button Mobile Optimization */
+
 @media (max-width: 480px) {
   .diary-btn {
     padding: 8px 10px;
@@ -893,3 +891,4 @@ html {
     min-height: 40px;
   }
 }
+

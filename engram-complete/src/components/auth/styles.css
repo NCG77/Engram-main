@@ -38,7 +38,7 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Cool gradient background */
+  
   background:
     linear-gradient(135deg, rgba(25, 25, 25, 0.95), rgba(10, 10, 10, 0.9)),
     radial-gradient(circle at top left, rgba(120, 120, 120, 0.5), transparent 70%),
@@ -48,7 +48,7 @@ html {
   position: relative;
 }
 
-/* Subtle texture overlay */
+
 .auth-page-wrapper::before {
   content: '';
   position: absolute;
@@ -79,7 +79,7 @@ html {
   padding: 0 40px;
 }
 
-/* Sign Up Panel */
+
 .sign-up-container {
   left: 0;
   width: 50%;
@@ -93,7 +93,7 @@ html {
   z-index: 5;
 }
 
-/* Sign In Panel */
+
 .sign-in-container {
   left: 0;
   width: 50%;
@@ -218,7 +218,7 @@ input::placeholder {
   color: var(--primary);
 }
 
-/* Overlay */
+
 .overlay-container {
   position: absolute;
   top: 0;
@@ -235,7 +235,7 @@ input::placeholder {
 }
 
 .overlay {
-  /* Sleek black and white gradient */
+  
   background: linear-gradient(135deg, #000000, #333333);
   position: relative;
   left: -100%;
@@ -304,7 +304,7 @@ p {
   margin-bottom: 5px;
 }
 
-/* Message boxes */
+
 .message-box {
   width: 100%;
   padding: 14px 16px;
@@ -326,7 +326,7 @@ p {
   border: 1px solid rgba(76, 175, 80, 0.2);
 }
 
-/* Mobile toggle for small screens */
+
 .mobile-toggle {
   display: none;
   margin-top: 30px;
@@ -343,7 +343,7 @@ p {
   text-decoration: underline;
 }
 
-/* Responsive Styles */
+
 @media (max-width: 992px) {
   .auth-container {
     max-width: 700px;
@@ -364,7 +364,7 @@ p {
     min-height: 580px;
   }
 
-  /* Hide overlay on mobile and switch to single panel view */
+  
   .overlay-container {
     display: none;
   }
@@ -380,7 +380,7 @@ p {
     transform: translateX(0);
   }
 
-  /* Show the appropriate form based on state */
+  
   .sign-up-container {
     display: none;
   }
@@ -397,7 +397,7 @@ p {
     display: block;
   }
 
-  /* Show mobile toggle buttons */
+  
   .mobile-toggle {
     display: block;
   }

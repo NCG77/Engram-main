@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './new_page.css';
 class Pixel {
@@ -283,22 +283,83 @@ if (typeof window !== 'undefined') {
         customElements.define('pixel-canvas', PixelCanvasElement);
     }
 }
+const Moon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+  </svg>
+);
+const Sun = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+  </svg>
+);
+
 const NewPage = () => {
     const navigate = useNavigate();
+    const [isDarkMode, setIsDarkMode] = useState(true);
+
+    useEffect(() => {
+        const savedTheme = localStorage.getItem("engram-theme");
+        if (savedTheme === "light") {
+            setIsDarkMode(false);
+            document.body.classList.remove("dark-mode");
+            document.body.classList.add("light-mode");
+        } else {
+            setIsDarkMode(true);
+            document.body.classList.add("dark-mode");
+            document.body.classList.remove("light-mode");
+        }
+    }, []);
+
+    const toggleTheme = () => {
+        setIsDarkMode(!isDarkMode);
+        if (isDarkMode) {
+            localStorage.setItem("engram-theme", "light");
+            document.body.classList.remove("dark-mode");
+            document.body.classList.add("light-mode");
+        } else {
+            localStorage.setItem("engram-theme", "dark");
+            document.body.classList.add("dark-mode");
+            document.body.classList.remove("light-mode");
+        }
+    };
+
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("userName");
         navigate("/");
     };
     return (
-        <div className="new-page-container">
-            <div className="logout-button-container" style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10 }}>
+        <div className={`new-page-container ${isDarkMode ? "dark" : "light"}`}>
+            <div className="top-actions" style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10, display: 'flex', gap: '15px', alignItems: 'center' }}>
+                <button
+                    onClick={toggleTheme}
+                    style={{
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: isDarkMode ? 'white' : 'black',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '50%',
+                        transition: 'background-color 0.3s ease'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'}
+                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                    aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+                >
+                    {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+                </button>
                 <button 
                     onClick={handleLogout}
                     style={{
                         padding: '8px 16px',
                         backgroundColor: '#ff475600',
-                        color: 'white',
+                        color: isDarkMode ? 'white' : 'black',
                         border: 'none',
                         borderRadius: '4px',
                         cursor: 'pointer',
@@ -306,8 +367,8 @@ const NewPage = () => {
                         fontWeight: 'bold',
                         transition: 'background-color 0.3s ease'
                     }}
-                    onMouseOver={(e) => e.target.style.backgroundColor = '#ff3838'}
-                    onMouseOut={(e) => e.target.style.backgroundColor = '#ff475600'}
+                    onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#ff3838'; e.currentTarget.style.color = 'white'; }}
+                    onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#ff475600'; e.currentTarget.style.color = isDarkMode ? 'white' : 'black'; }}
                 >
                     Logout
                 </button>
@@ -315,7 +376,7 @@ const NewPage = () => {
             <div className="main">
                 <div style={{ textAlign: 'left', marginBottom: '2rem', position: 'relative', zIndex: 2 }}>
                     <h1>Engram</h1>
-                    <h2>Store your digital self Online.</h2>
+                    <h2 style={{ opacity: 0.8 }}>Store your digital self Online.</h2>
                 </div>
                 <Link to="/chat" style={{ textDecoration: 'none', color: 'inherit', position: 'relative', zIndex: 2 }}>
                     <div className="card" style={{ "--active-color": "#fef08a", position: "relative", overflow: "hidden" }}>

@@ -48,13 +48,26 @@
     justify-content: center;
     align-items: center;
     font-family: 'CustomFont', 'Orbitron', sans-serif;
-    background: linear-gradient(135deg, #020202 0%, #0a0a0a 25%, #050505 50%, #0f0f0f 75%, #020202 100%);
-    background-size: 200% 200%;
-    background-attachment: fixed;
     position: relative;
     color: var(--fg);
     padding: 0;
     overflow: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.new-page-container.dark {
+    background: #121212;
+    --fg: #ffffff;
+}
+
+.new-page-container.light {
+    background: #ffffff;
+    --fg: #000000;
+}
+
+.new-page-container.light .card {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
 @media (max-width: 768px) {
@@ -66,23 +79,7 @@
     }
 }
 
-.new-page-container::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: radial-gradient(var(--glow-color) 15%, transparent 16%);
-    background-size: 20px 20px;
-    -webkit-mask-image: linear-gradient(to right, black 0%, transparent 15%, transparent 85%, black 100%);
-    mask-image: linear-gradient(to right, black 0%, transparent 15%, transparent 85%, black 100%);
-    pointer-events: none;
-    z-index: 0;
-    animation: glow-pulse 6s ease-in-out infinite;
-}
 
-/* scanlines animation removed since we replaced the background */
 
 @keyframes float-slow {
     0%, 100% {
@@ -114,27 +111,7 @@
     }
 }
 
-.new-page-container::before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        /* Glowy corner accents */
-        radial-gradient(800px at 10% 20%, rgba(100, 150, 200, 0.15) 0%, transparent 50%),
-        radial-gradient(600px at 90% 90%, rgba(150, 100, 200, 0.1) 0%, transparent 50%),
-        radial-gradient(900px at 50% 50%, rgba(100, 120, 150, 0.05) 0%, transparent 60%),
-        /* Subtle geometric lines */
-        linear-gradient(45deg, transparent 48%, rgba(100, 150, 200, 0.08) 49%, rgba(100, 150, 200, 0.08) 51%, transparent 52%),
-        linear-gradient(-45deg, transparent 48%, rgba(100, 150, 200, 0.06) 49%, rgba(100, 150, 200, 0.06) 51%, transparent 52%);
-    background-size: 100% 100%, 100% 100%, 100% 100%, 200px 200px, 200px 200px;
-    z-index: 1;
-    pointer-events: none;
-    animation: glow-pulse 6s ease-in-out infinite;
-}
+
 
 body::before {
     display: none;

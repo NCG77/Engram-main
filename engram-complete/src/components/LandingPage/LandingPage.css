@@ -255,7 +255,7 @@ body.dark-mode {
   transition: 0s;
 }
 
-/* Features Section */
+
 .features-section {
   padding: 4rem 2rem;
   background-color: #f9f9f9 !important;
@@ -303,7 +303,7 @@ body.dark-mode {
   color: #666 !important;
 }
 
-/* Concept Sections */
+
 .concept-section {
   padding: 5rem 2rem;
   max-width: 1200px;
@@ -315,8 +315,8 @@ body.dark-mode {
   opacity: 0;
   transform: translateY(50px);
   transition:
-    opacity 0.8s ease,
-    transform 0.8s ease;
+    opacity 0.4s ease,
+    transform 0.4s ease;
   width: 100%;
   padding-top: 50px;
 }
@@ -351,7 +351,7 @@ body.dark-mode {
   margin-bottom: 1rem;
   transform: translateX(-20px);
   opacity: 0;
-  transition: all 0.8s ease 0.2s;
+  transition: all 0.4s ease 0.05s;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -368,7 +368,7 @@ body.dark-mode {
   line-height: 1.2;
   transform: translateX(-20px);
   opacity: 0;
-  transition: all 0.8s ease 0.4s;
+  transition: all 0.4s ease 0.1s;
   color: #000 !important;
 }
 
@@ -383,7 +383,7 @@ body.dark-mode {
   color: #4b5563 !important;
   transform: translateX(-20px);
   opacity: 0;
-  transition: all 0.8s ease 0.6s;
+  transition: all 0.4s ease 0.15s;
 }
 
 .concept-section.visible .concept-description {
@@ -410,7 +410,7 @@ body.dark-mode {
   position: relative;
   transform: scale(0.95) translateY(20px);
   opacity: 0;
-  transition: all 1s ease 0.4s;
+  transition: all 0.5s ease 0.1s;
 }
 
 .concept-section.visible .concept-card {
@@ -430,7 +430,7 @@ body.dark-mode {
   transform: scale(1.05);
 }
 
-/* Benefits Section */
+
 .benefits-section {
   max-width: 1200px;
   margin: 0 auto;
@@ -477,14 +477,14 @@ body.dark-mode {
   color: #666 !important;
 }
 
-/* FAQ Section */
+
 .faq-section {
   max-width: 1000px;
   margin: 0 auto;
   padding: 5rem 2rem;
   opacity: 0;
   transform: translateY(30px);
-  transition: all 0.8s ease;
+  transition: all 0.4s ease;
   width: 100%;
 }
 
@@ -596,7 +596,7 @@ body.dark-mode .faq-question {
   color: #4b5563 !important;
 }
 
-/* Final CTA Section */
+
 .final-cta-section {
   background: linear-gradient(135deg, #000 0%, #1a1a1a 100%) !important;
   color: #fff;
@@ -637,7 +637,7 @@ body.dark-mode .faq-question {
   background-color: #f0f0f0;
 }
 
-/* Footer */
+
 .footer {
   width: 100%;
   background-color: #000 !important;
@@ -747,7 +747,7 @@ body.dark-mode .faq-question {
   transition: 0s;
 }
 
-/* Animations */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -832,7 +832,7 @@ body.dark-mode .faq-question {
   }
 }
 
-/* Responsive Design */
+
 @media (max-width: 992px) {
   .concept-section {
     flex-direction: column;
@@ -999,3 +999,4 @@ body.dark-mode .faq-question {
     font-size: 1rem;
   }
 }
+

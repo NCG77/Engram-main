@@ -51,14 +51,11 @@ const App = () => {
       <Suspense fallback={<PageLoader />}>
         <LazyErrorBoundary>
           <Routes>
-            {}
             <Route path="/" element={<PublicRoute element={<LandingPage />} />} />
             <Route path="/auth" element={<PublicRoute element={<Auth />} />} />
-            {}
             <Route path="/new_page" element={<ProtectedRoute element={<NewPage />} />} />
             <Route path="/chat" element={<ProtectedRoute element={<ChatInterface />} />} />
             <Route path="/diary" element={<ProtectedRoute element={<DiaryApp />} />} />
-            {}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </LazyErrorBoundary>
