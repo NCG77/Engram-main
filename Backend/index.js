@@ -2,6 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const helmet = require("helmet");
+const compression = require("compression");
 const checkDatabaseConnection = require("./middleware/dbconnection");
 const userRoutes = require("./routes/userRoute");
 const diaryRoutes = require("./routes/diaryRoute");
@@ -11,6 +13,8 @@ const accuracyRoutes = require("./routes/accuracy");
 const chatRoutes = require("./routes/chat");
 const sessionRoutes = require("./routes/sessionRoute");
 const app = express();
+app.use(helmet());
+app.use(compression());
 app.use(
   cors({
     origin: [
