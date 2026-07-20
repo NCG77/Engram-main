@@ -25,13 +25,13 @@ const ChatInterface = () => {
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
   const getBaseUrl = () => {
-    let url;
+    let url = "";
     try {
       if (typeof import.meta !== "undefined" && import.meta.env) {
-        url = import.meta.env.VITE_REACT_APP_BACKEND_BASEURL;
+        url = import.meta.env.VITE_REACT_APP_BACKEND_BASEURL || "";
       }
     } catch (e) {}
-    return url || "http://localhost:5000";
+    return url;
   };
   const baseUrl = getBaseUrl();
   useEffect(() => {
@@ -124,18 +124,18 @@ const ChatInterface = () => {
     const userRatings = Object.values(messageRatings);
     const rScores = Object.values(ragasScores);
 
-    let userScore = 0.85; // Default base
+    let userScore = 0.85; 
     if (userRatings.length > 0) {
       const correctCount = userRatings.filter(r => r === 'up').length;
       userScore = correctCount / userRatings.length;
     }
 
-    let ragasAvg = 0.85; // Default base
+    let ragasAvg = 0.85; 
     if (rScores.length > 0) {
       ragasAvg = rScores.reduce((a, b) => a + b, 0) / rScores.length;
     }
 
-    // Mix Ragas and User Feedback (50/50 split)
+    
     const combinedScore = (userScore * 0.5) + (ragasAvg * 0.5);
     setAccuracy({ overallScore: combinedScore });
   }, [messageRatings, ragasScores]);
@@ -186,11 +186,11 @@ const ChatInterface = () => {
       const updatedMessages = [...messages, userMessage, botMessage];
       setMessages(updatedMessages);
       
-      // Simulate async Ragas Evaluation for the new message
+      
       const msgIndex = updatedMessages.length - 1;
       setTimeout(() => {
-        // In production: fetch('/api/chat/evaluate', { body: { answer: botMessage.content } })
-        const simulatedRagasScore = Math.random() * (1.0 - 0.7) + 0.7; // Random score between 0.7 and 1.0
+        
+        const simulatedRagasScore = Math.random() * (1.0 - 0.7) + 0.7; 
         setRagasScores(prev => ({ ...prev, [msgIndex]: simulatedRagasScore }));
       }, 1500);
 

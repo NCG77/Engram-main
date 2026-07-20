@@ -12,19 +12,20 @@ const reviewRoutes = require("./routes/review");
 const accuracyRoutes = require("./routes/accuracy");
 const chatRoutes = require("./routes/chat");
 const sessionRoutes = require("./routes/sessionRoute");
+const { initPineconeIndex } = require("./utils/pinecone");
+
 const app = express();
 app.use(helmet());
 app.use(compression());
+
+const allowedOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : "*";
 app.use(
   cors({
-    origin: [
-      process.env.FRONTEND_URL,
-      "http://localhost:5173",
-      "http://localhost:3000",
-    ].filter(Boolean),
+    origin: allowedOrigins,
   }),
 );
 app.use(express.json());
+
 const mongooseOptions = {
   maxPoolSize: 5,
   minPoolSize: 0,
@@ -34,18 +35,29 @@ const mongooseOptions = {
   bufferCommands: false,
   retryWrites: true,
 };
-mongoose
-  .connect(process.env.MONGO_URI, mongooseOptions)
-  .then(() => {
-    startServer();
-  })
-  .catch((err) => {
-    console.error("❌ MongoDB connection error:", err);
-    process.exit(1);
-  });
+
+let isConnected = false;
+
+const connectDB = async () => {
+  if (isConnected) return;
+  try {
+    const db = await mongoose.connect(process.env.MONGO_URI, mongooseOptions);
+    isConnected = db.connections[0].readyState === 1;
+    console.log(`[${new Date().toISOString()}] ✅ MongoDB connected successfully.`);
+    console.log(`[${new Date().toISOString()}] 🌲 Initializing Pinecone...`);
+    await initPineconeIndex();
+    console.log(`[${new Date().toISOString()}] ✅ Pinecone initialized successfully.`);
+  } catch (err) {
+    console.error(`[${new Date().toISOString()}] ❌ MongoDB connection error during startup:`, err.message);
+  }
+};
+
+connectDB();
+
 app.get("/", (req, res) => {
-  res.status(200).json({ message: "Engram API is running successfully! 🚀" });
+  res.status(200).json({ message: "Engram API is running successfully! 🚀", timestamp: new Date().toISOString() });
 });
+
 app.use("/api", checkDatabaseConnection);
 app.use("/api/users", userRoutes);
 app.use("/api/diary", diaryRoutes);
@@ -54,16 +66,21 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/accuracy", accuracyRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/sessions", sessionRoutes);
+
 mongoose.connection.on("disconnected", () => {
-  console.warn("⚠️ MongoDB disconnected");
+  isConnected = false;
+  console.warn(`[${new Date().toISOString()}] ⚠️ MongoDB disconnected. Check network connection or MongoDB Atlas status.`);
 });
+
 mongoose.connection.on("error", (err) => {
-  console.error("❌ MongoDB connection error:", err);
+  console.error(`[${new Date().toISOString()}] ❌ MongoDB runtime error:`, err.message);
 });
-const { initPineconeIndex } = require("./utils/pinecone");
-function startServer() {
+
+if (process.env.NODE_ENV !== "production") {
   const PORT = process.env.PORT || 5000;
-  app.listen(PORT, async () => {
-    await initPineconeIndex();
+  app.listen(PORT, () => {
+    console.log(`[${new Date().toISOString()}] 🚀 Server running locally on port ${PORT}`);
   });
 }
+
+module.exports = app;

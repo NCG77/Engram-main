@@ -15,7 +15,7 @@ const updateAura = async (req, res) => {
     const extractorProcess = fork(extractorPath);
     let stdout = "";
     let stderr = "";
-    // Send diary content to the extractor process
+    
     extractorProcess.send({ payload });
     extractorProcess.on("message", (message) => {
       if (message.error) {

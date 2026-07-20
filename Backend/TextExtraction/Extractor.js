@@ -31,15 +31,15 @@ async function loadEntries() {
           process.exit(1);
         }
       } else {
-        // If we are here, it likely means the controller spawned us but didn't send data fast enough,
-        // or we are running standalone without args.
-        // We don't exit immediately to give IPC a tiny bit more chance, but usually we fail here.
+        
+        
+        
         console.error("⚠️ [Extractor] No input received. Waiting...");
       }
     }, 2000);
   });
 }
-// 3. Call Groq API
+
 async function extract(apiKey, payload) {
   const text = payload
     .map((item) => item.text)

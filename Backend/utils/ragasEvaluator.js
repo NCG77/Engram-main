@@ -44,11 +44,7 @@ function callAiApi(messages, apiKey) {
   });
 }
 
-/**
- * Ragas Metric: Faithfulness
- * Evaluates whether the generated answer can be entirely deduced from the given context.
- * Returns a score of 1 (faithful) or 0 (hallucinated).
- */
+
 async function evaluateFaithfulness(question, context, answer, apiKey) {
   const prompt = `
     You are an impartial judge evaluating a Retrieval-Augmented Generation (RAG) system.
@@ -81,10 +77,7 @@ async function evaluateFaithfulness(question, context, answer, apiKey) {
   }
 }
 
-/**
- * Ragas Metric: Answer Relevancy
- * Evaluates how directly the answer addresses the user's question.
- */
+
 async function evaluateAnswerRelevancy(question, answer, apiKey) {
   const prompt = `
     You are an impartial judge. Your task is to evaluate the relevancy of the generated answer to the original question.
