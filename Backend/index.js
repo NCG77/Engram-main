@@ -30,13 +30,16 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Engram API is running successfully! 🚀", timestamp: new Date().toISOString() });
 });
 
+const { apiLimiter, expensiveApiLimiter } = require("./middleware/rateLimiter");
+
 app.use("/api", checkDatabaseConnection);
+app.use("/api", apiLimiter); // Apply general rate limit to all /api routes
 app.use("/api/users", userRoutes);
-app.use("/api/diary", diaryRoutes);
-app.use("/api/aura", auraRoutes);
+app.use("/api/diary", expensiveApiLimiter, diaryRoutes); // Expensive (Pinecone upsert)
+app.use("/api/aura", expensiveApiLimiter, auraRoutes); // Expensive (Groq API)
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/accuracy", accuracyRoutes);
-app.use("/api/chat", chatRoutes);
+app.use("/api/chat", expensiveApiLimiter, chatRoutes); // Expensive (Groq API)
 app.use("/api/sessions", sessionRoutes);
 
 mongoose.connection.on("disconnected", () => {

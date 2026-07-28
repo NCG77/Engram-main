@@ -20,13 +20,49 @@ function cleanData(text) {
 
 function chunkText(text, chunkSize = 1000, chunkOverlap = 200) {
   if (!text) return [];
+  
+  // Split by sentences using regex that keeps the punctuation
+  const sentenceRegex = /[^.!?]+[.!?]+[\])'"`’”]*\s*|.+/g;
+  const sentences = text.match(sentenceRegex) || [text];
+  
   const chunks = [];
-  let start = 0;
-  while (start < text.length) {
-    chunks.push(text.slice(start, start + chunkSize));
-    if (start + chunkSize >= text.length) break;
-    start += chunkSize - chunkOverlap;
+  let currentChunk = "";
+  
+  for (let i = 0; i < sentences.length; i++) {
+    const sentence = sentences[i];
+    
+    // If a single sentence is larger than chunkSize, we have to slice it (fallback)
+    if (sentence.length > chunkSize) {
+      if (currentChunk.trim()) {
+        chunks.push(currentChunk.trim());
+        currentChunk = "";
+      }
+      let start = 0;
+      while (start < sentence.length) {
+        chunks.push(sentence.slice(start, start + chunkSize).trim());
+        start += chunkSize - chunkOverlap;
+      }
+      continue;
+    }
+    
+    if ((currentChunk + sentence).length <= chunkSize) {
+      currentChunk += sentence;
+    } else {
+      if (currentChunk.trim()) chunks.push(currentChunk.trim());
+      
+      // Handle overlap by extracting the last chunkOverlap characters
+      const overlapText = currentChunk.slice(-chunkOverlap);
+      const spaceIndex = overlapText.indexOf(' ');
+      const cleanOverlap = spaceIndex !== -1 ? overlapText.slice(spaceIndex) : overlapText;
+      
+      currentChunk = cleanOverlap.trim() + " " + sentence;
+    }
   }
+  
+  if (currentChunk.trim()) {
+    chunks.push(currentChunk.trim());
+  }
+  
   return chunks;
 }
 
@@ -82,14 +118,26 @@ async function initPineconeIndex() {
   }
 }
 
-async function getEmbeddings(text) {
+async function getEmbeddingsBatch(texts) {
+  if (!texts || texts.length === 0) return [];
   try {
     const response = await pc.inference.embed({
       model: 'multilingual-e5-large',
-      inputs: [text],
+      inputs: texts,
       parameters: { inputType: 'passage', truncate: 'END' }
     });
-    return (response.data || response)[0].values;
+    // response.data contains array of embedding objects
+    return (response.data || response).map(item => item.values);
+  } catch (error) {
+    console.error("Error generating batch embeddings:", error);
+    throw error;
+  }
+}
+
+async function getEmbeddings(text) {
+  try {
+    const embeddings = await getEmbeddingsBatch([text]);
+    return embeddings[0];
   } catch (error) {
     console.error("Error generating embeddings:", error);
     throw error;
@@ -107,11 +155,13 @@ async function upsertDiaryToPinecone(diaryEntry) {
     const index = pc.index(PINECONE_INDEX_NAME);
     const records = [];
 
+    // Generate embeddings for all chunks in a single batch request
+    const embeddings = await getEmbeddingsBatch(chunks);
+
     for (let i = 0; i < chunks.length; i++) {
-      const embedding = await getEmbeddings(chunks[i]);
       records.push({
         id: `${diaryEntry._id.toString()}-chunk-${i}`,
-        values: embedding,
+        values: embeddings[i],
         metadata: {
           userId: diaryEntry.userId.toString(),
           title: diaryEntry.title,
