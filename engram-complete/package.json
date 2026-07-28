@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.101.4",
     "axios": "^1.8.4",
     "cloudflared": "^0.7.0",
     "dotenv": "^16.5.0",

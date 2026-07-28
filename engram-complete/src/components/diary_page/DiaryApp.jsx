@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getDiaryEntries, createDiaryEntry, deleteDiaryEntry } from "../../api/index";
 const Moon = ({ size = 18 }) => (
   <svg
@@ -230,11 +231,24 @@ const DiarySidebar = ({ entries, onSelectEntry, isDarkMode }) => {
 };
 const DiaryApp = () => {
   const navigate = useNavigate();
-  const [entries, setEntries] = useState([]);
+  const queryClient = useQueryClient();
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
+
+  const { data: entries = [], isLoading } = useQuery({
+    queryKey: ['diaryEntries'],
+    queryFn: async () => {
+      try {
+        return await getDiaryEntries();
+      } catch (err) {
+        console.error("Failed to load diary entries", err);
+        alert("Could not load diary entries. Please make sure you're logged in.");
+        return [];
+      }
+    }
+  });
   useEffect(() => {
     const checkMobileView = () => {
       const isMobile = window.innerWidth <= 768;
@@ -258,17 +272,6 @@ const DiaryApp = () => {
       document.body.classList.add("dark-mode");
       document.body.classList.remove("light-mode");
     }
-    (async () => {
-      try {
-        const data = await getDiaryEntries();
-        setEntries(data);
-      } catch (err) {
-        console.error("Failed to load diary entries", err);
-        alert(
-          "Could not load diary entries. Please make sure you're logged in.",
-        );
-      }
-    })();
   }, []);
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -285,56 +288,66 @@ const DiaryApp = () => {
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
   };
-  const handleSaveEntry = async ({ title, content }) => {
-    try {
-      const token = localStorage.getItem("token");
+  const createMutation = useMutation({
+    mutationFn: async ({ title, content }) => {
       const data = await createDiaryEntry({ title, content });
-      setEntries([data.diaryEntry, ...entries]);
-      setSelectedEntry(null);
-      if (isMobileView) {
-        setIsSidebarVisible(false);
-      }
-      const auraRes = await fetch(
+      const token = localStorage.getItem("token");
+      await fetch(
         `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/aura/update`,
         {
           method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
-      const auraData = await auraRes.json();
-    } catch (err) {
+      return data.diaryEntry;
+    },
+    onSuccess: (newEntry) => {
+      queryClient.setQueryData(['diaryEntries'], (old) => [newEntry, ...old]);
+      setSelectedEntry(null);
+      if (isMobileView) setIsSidebarVisible(false);
+    },
+    onError: (err) => {
       console.error("Failed to create entry or update aura", err);
       alert("Something went wrong. Please try again.");
     }
-  };
-  const handleSelectEntry = (entry) => {
-    setSelectedEntry(entry);
-    if (isMobileView) {
-      setIsSidebarVisible(false);
-    }
-  };
-  const handleBack = () => {
-    setSelectedEntry(null);
-  };
-  const handleDeleteEntry = async (id) => {
-    try {
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => {
       await deleteDiaryEntry(id);
-      setEntries(entries.filter(e => e._id !== id));
-      setSelectedEntry(null);
-      if (isMobileView) {
-        setIsSidebarVisible(false);
-      }
       const token = localStorage.getItem("token");
-      fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/aura/update`, {
+      await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/aura/update`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
-      }).catch(console.error);
-    } catch (err) {
+      });
+      return id;
+    },
+    onSuccess: (deletedId) => {
+      queryClient.setQueryData(['diaryEntries'], (old) => old.filter(e => e._id !== deletedId));
+      setSelectedEntry(null);
+      if (isMobileView) setIsSidebarVisible(false);
+    },
+    onError: (err) => {
       console.error("Failed to delete entry", err);
       alert("Failed to delete entry. Please try again.");
     }
+  });
+
+  const handleSaveEntry = (data) => {
+    createMutation.mutate(data);
+  };
+
+  const handleSelectEntry = (entry) => {
+    setSelectedEntry(entry);
+    if (isMobileView) setIsSidebarVisible(false);
+  };
+
+  const handleBack = () => {
+    setSelectedEntry(null);
+  };
+
+  const handleDeleteEntry = (id) => {
+    deleteMutation.mutate(id);
   };
   return (
     <div
