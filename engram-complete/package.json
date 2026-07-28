@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.101.4",
-    "axios": "^1.8.4",
+    "axios": "^1.18.0",
     "cloudflared": "^0.7.0",
     "dotenv": "^16.5.0",
     "local": "^0.3.3",
