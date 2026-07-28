@@ -12,7 +12,7 @@ const reviewRoutes = require("./routes/review");
 const accuracyRoutes = require("./routes/accuracy");
 const chatRoutes = require("./routes/chat");
 const sessionRoutes = require("./routes/sessionRoute");
-const { initPineconeIndex } = require("./utils/pinecone");
+const { connectDB } = require("./db");
 
 const app = express();
 app.use(helmet());
@@ -25,34 +25,6 @@ app.use(
   }),
 );
 app.use(express.json());
-
-const mongooseOptions = {
-  maxPoolSize: 5,
-  minPoolSize: 0,
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
-  family: 4,
-  bufferCommands: false,
-  retryWrites: true,
-};
-
-let isConnected = false;
-
-const connectDB = async () => {
-  if (isConnected) return;
-  try {
-    const db = await mongoose.connect(process.env.MONGO_URI, mongooseOptions);
-    isConnected = db.connections[0].readyState === 1;
-    console.log(`[${new Date().toISOString()}] ✅ MongoDB connected successfully.`);
-    console.log(`[${new Date().toISOString()}] 🌲 Initializing Pinecone...`);
-    await initPineconeIndex();
-    console.log(`[${new Date().toISOString()}] ✅ Pinecone initialized successfully.`);
-  } catch (err) {
-    console.error(`[${new Date().toISOString()}] ❌ MongoDB connection error during startup:`, err.message);
-  }
-};
-
-connectDB();
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Engram API is running successfully! 🚀", timestamp: new Date().toISOString() });
@@ -78,9 +50,15 @@ mongoose.connection.on("error", (err) => {
 
 if (process.env.NODE_ENV !== "production") {
   const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`[${new Date().toISOString()}] 🚀 Server running locally on port ${PORT}`);
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`[${new Date().toISOString()}] 🚀 Server running locally on port ${PORT}`);
+    });
+  }).catch((err) => {
+    console.error(`[${new Date().toISOString()}] ❌ Failed to start server:`, err.message);
   });
+} else {
+  connectDB().catch(console.error);
 }
 
 module.exports = app;
