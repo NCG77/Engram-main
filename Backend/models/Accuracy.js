@@ -17,6 +17,8 @@ const AccuracySchema = new Schema({
         extraversion: Number,
         agreeableness: Number,
         neuroticism: Number,
+        ragasFaithfulness: Number,
+        ragasAnswerRelevancy: Number,
     },
 });
 module.exports = mongoose.model("Accuracy", AccuracySchema);

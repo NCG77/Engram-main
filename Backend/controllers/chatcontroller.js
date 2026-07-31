@@ -2,6 +2,8 @@ const Aura = require("../models/Aura");
 const User = require("../models/User");
 const https = require("https");
 const { queryRelevantDiaries } = require("../utils/pinecone");
+const { evaluateFaithfulness, evaluateAnswerRelevancy } = require("../utils/ragasEvaluator");
+const { saveRagasMetric } = require("./accuracyservice");
 const CONFIG = {
   REQUEST_TIMEOUT: 30000, 
   MAX_MESSAGE_LENGTH: 2000,
@@ -258,6 +260,14 @@ async function sendMessage(req, res) {
       );
       aiReply =
         "I don't have enough personal experience to answer that. Can we talk about something else?";
+    } else {
+      // Async evaluation for RAGAS metrics
+      Promise.all([
+        evaluateFaithfulness(userMessage, ragContext || "No context", aiReply, apiKey),
+        evaluateAnswerRelevancy(userMessage, aiReply, apiKey)
+      ]).then(([faithResult, relResult]) => {
+        saveRagasMetric(faithResult.score || 0, relResult.score || 0).catch(e => console.error("Failed to save RAGAS metric:", e));
+      }).catch(err => console.error("RAGAS Evaluation failed:", err));
     }
     return res.status(200).json({ assistantMessage: aiReply });
   } catch (err) {
