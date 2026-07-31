@@ -4,6 +4,7 @@ const https = require("https");
 const { queryRelevantDiaries } = require("../utils/pinecone");
 const { evaluateFaithfulness, evaluateAnswerRelevancy } = require("../utils/ragasEvaluator");
 const { saveRagasMetric } = require("./accuracyservice");
+const { rewriteQuery } = require("../utils/queryRewriter");
 const CONFIG = {
   REQUEST_TIMEOUT: 30000, 
   MAX_MESSAGE_LENGTH: 2000,
@@ -80,7 +81,7 @@ function validateAiResponse(response, userName) {
   }
   return true;
 }
-function callAiApi(messages, apiKey) {
+function callAiApi(messages, apiKey, res) {
   return new Promise((resolve, reject) => {
     if (!apiKey) return reject(new Error("API Key is missing in backend .env"));
     if (apiKey.length < 20) {
@@ -91,6 +92,7 @@ function callAiApi(messages, apiKey) {
       messages: messages,
       temperature: 0.7,
       max_tokens: 500,
+      stream: true,
     };
     const options = {
       hostname: "api.groq.com",
@@ -102,33 +104,28 @@ function callAiApi(messages, apiKey) {
         Authorization: `Bearer ${apiKey}`,
       },
     };
-    const req = https.request(options, (res) => {
-      let data = "";
-      let dataSize = 0;
-      res.on("data", (chunk) => {
-        dataSize += chunk.length;
-        if (dataSize > CONFIG.MAX_RESPONSE_SIZE) {
-          req.destroy();
-          reject(new Error("Response size exceeds limit"));
-          return;
+    const req = https.request(options, (apiRes) => {
+      let fullResponse = "";
+      apiRes.on("data", (chunk) => {
+        const chunkStr = chunk.toString();
+        if (res) res.write(chunkStr);
+        const lines = chunkStr.split('\n').filter(line => line.trim() !== '');
+        for (const line of lines) {
+          if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+            try {
+              const parsed = JSON.parse(line.slice(6));
+              if (parsed.choices?.[0]?.delta?.content) {
+                fullResponse += parsed.choices[0].delta.content;
+              }
+            } catch (e) {}
+          }
         }
-        data += chunk;
       });
-      res.on("end", () => {
-        if (res.statusCode !== 200) {
-          return reject(
-            new Error(`API Error ${res.statusCode}: ${data.substring(0, 200)}`)
-          );
+      apiRes.on("end", () => {
+        if (apiRes.statusCode !== 200 && !fullResponse) {
+          return reject(new Error(`API Error ${apiRes.statusCode}`));
         }
-        try {
-          const json = JSON.parse(data);
-          const content =
-            json.choices?.[0]?.message?.content ||
-            "I'm having trouble thinking right now.";
-          resolve(content);
-        } catch (e) {
-          reject(new Error("Failed to parse API response"));
-        }
+        resolve(fullResponse);
       });
     });
     req.on("timeout", () => {
@@ -227,7 +224,19 @@ async function sendMessage(req, res) {
     }
     const nameToUse = userDoc?.name || "User";
     const date = new Date().toLocaleDateString();
-    const relevantDiaries = await queryRelevantDiaries(userId, userMessage, 5);
+    const fullDateForLLM = new Date().toISOString();
+    let rewrittenQuery = userMessage;
+    let metadataFilter = null;
+    try {
+       const rewritten = await rewriteQuery(userMessage, fullDateForLLM, apiKey);
+       rewrittenQuery = rewritten.search_query || userMessage;
+       metadataFilter = rewritten.metadata_filter || null;
+       console.log(`[Query Rewriter] Rewrote "${userMessage}" -> "${rewrittenQuery}", filter:`, metadataFilter);
+    } catch(e) { 
+       console.error("Rewriter failed", e); 
+    }
+
+    const relevantDiaries = await queryRelevantDiaries(userId, rewrittenQuery, 5, metadataFilter);
     let ragContext = "";
     if (relevantDiaries && relevantDiaries.length > 0) {
       ragContext = "\n\nRELEVANT PAST DIARY ENTRIES (Use these to answer the user if applicable):\n" + 
@@ -244,22 +253,26 @@ async function sendMessage(req, res) {
       );
     }
     apiMessages.push({ role: "user", content: userMessage });
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
     let aiReply;
     try {
-      aiReply = await callAiApi(apiMessages, apiKey);
+      aiReply = await callAiApi(apiMessages, apiKey, res);
     } catch (apiErr) {
       console.error(`❌ [API] Error for user ${userId}:`, apiErr.message);
-      return res.status(503).json({
-        error: "AI service temporarily unavailable. Please try again later.",
-      });
+      res.write(`data: ${JSON.stringify({ error: "AI service temporarily unavailable." })}\n\n`);
+      res.end();
+      return;
     }
     const isValidResponse = validateAiResponse(aiReply, nameToUse);
     if (!isValidResponse) {
       console.error(
         `❌ [SECURITY] AI broke character for user ${userId}. Response: "${aiReply.substring(0, 100)}..."`
       );
-      aiReply =
-        "I don't have enough personal experience to answer that. Can we talk about something else?";
+      res.write(`data: ${JSON.stringify({ delta: "\n\n[System: AI generated a response that violates character constraints]" })}\n\n`);
     } else {
       // Async evaluation for RAGAS metrics
       Promise.all([
@@ -269,10 +282,13 @@ async function sendMessage(req, res) {
         saveRagasMetric(faithResult.score || 0, relResult.score || 0).catch(e => console.error("Failed to save RAGAS metric:", e));
       }).catch(err => console.error("RAGAS Evaluation failed:", err));
     }
-    return res.status(200).json({ assistantMessage: aiReply });
+    res.end();
   } catch (err) {
     console.error("❌ [Chat] Unexpected error:", err.message);
-    return res.status(500).json({ error: "Failed to generate response." });
+    if (!res.headersSent) {
+      return res.status(500).json({ error: "Failed to generate response." });
+    }
+    res.end();
   }
 }
 module.exports = { sendMessage };

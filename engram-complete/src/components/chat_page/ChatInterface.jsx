@@ -175,16 +175,54 @@ const ChatInterface = () => {
         }),
       });
       if (!chatResponse.ok) {
-        const errorData = await chatResponse.json();
-        throw new Error(errorData.error || "Failed to get AI response");
+        let errorMsg = "Failed to get AI response";
+        try {
+          const errorData = await chatResponse.json();
+          errorMsg = errorData.error || errorMsg;
+        } catch(e) {}
+        throw new Error(errorMsg);
       }
-      const chatData = await chatResponse.json();
-      const botMessage = {
-        role: "assistant",
-        content: chatData?.assistantMessage || "I'm sorry, I encountered an error processing your message.",
-      };
-      const updatedMessages = [...messages, userMessage, botMessage];
+
+      const reader = chatResponse.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+
+      let botMessageContent = "";
+      let botMessage = { role: "assistant", content: "" };
+      let updatedMessages = [...messages, userMessage, botMessage];
       setMessages(updatedMessages);
+
+      let done = false;
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        if (value) {
+           const chunkStr = decoder.decode(value, { stream: true });
+           const lines = chunkStr.split('\n').filter(line => line.trim() !== '');
+           for (const line of lines) {
+             if (line.startsWith('data: ')) {
+               const data = line.slice(6);
+               if (data === '[DONE]') {
+                  done = true;
+                  break;
+               }
+               try {
+                 const parsed = JSON.parse(data);
+                 if (parsed.error) {
+                    throw new Error(parsed.error);
+                 }
+                 if (parsed.delta) {
+                    botMessageContent += parsed.delta;
+                 } else if (parsed.choices?.[0]?.delta?.content) {
+                    botMessageContent += parsed.choices[0].delta.content;
+                 }
+                 updatedMessages = [...messages, userMessage, { ...botMessage, content: botMessageContent }];
+                 setMessages([...updatedMessages]);
+                 scrollToBottom();
+               } catch(e) {}
+             }
+           }
+        }
+      }
       
       
       const msgIndex = updatedMessages.length - 1;

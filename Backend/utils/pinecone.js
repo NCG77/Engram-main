@@ -185,20 +185,21 @@ async function upsertDiaryToPinecone(diaryEntry) {
   }
 }
 
-async function queryRelevantDiaries(userId, queryText, topK = 5) {
+async function queryRelevantDiaries(userId, queryText, topK = 5, metadataFilter = null) {
   if (!process.env.PINECONE_API_KEY) return [];
 
   try {
     const embedding = await getEmbeddings(queryText);
     const index = pc.index(PINECONE_INDEX_NAME);
 
+    const baseFilter = { userId: { $eq: userId } };
+    const finalFilter = metadataFilter ? { ...baseFilter, ...metadataFilter } : baseFilter;
+
     const queryResponse = await index.query({
       vector: embedding,
       topK,
       includeMetadata: true,
-      filter: {
-        userId: { $eq: userId }
-      }
+      filter: finalFilter
     });
 
     return queryResponse.matches.map(match => match.metadata);
