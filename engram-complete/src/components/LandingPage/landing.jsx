@@ -221,8 +221,8 @@ export default function LandingPage() {
           <div className="footer-brand">Engram</div>
           <div className="footer-links">
             <div className="footer-link" onClick={() => window.location.href = "mailto:justin.cider.dm@gmail.com"}>Support</div>
-            <div className="footer-link" onClick={() => alert("Privacy Policy is currently being updated. Please check back later.")}>Privacy Policy</div>
-            <div className="footer-link" onClick={() => alert("Terms of Service are currently being updated. Please check back later.")}>Terms of Service</div>
+            <div className="footer-link" onClick={() => window.location.href = "/privacy"}>Privacy Policy</div>
+            <div className="footer-link" onClick={() => window.location.href = "/terms"}>Terms of Service</div>
           </div>
           <button
             className="footer-cta"

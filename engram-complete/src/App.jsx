@@ -6,6 +6,8 @@ const NewPage = lazy(() => import("./components/new_page/new_page"));
 const ChatInterface = lazy(() => import("./components/chat_page/ChatInterface"));
 const DiaryApp = lazy(() => import("./components/diary_page/DiaryApp"));
 const LandingPage = lazy(() => import("./components/LandingPage/landing"));
+const PrivacyPolicy = lazy(() => import("./components/policies/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./components/policies/TermsOfService"));
 const PageLoader = () => (
   <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", fontFamily: "system-ui, sans-serif" }}>
     Loading...
@@ -56,6 +58,8 @@ const App = () => {
             <Route path="/new_page" element={<ProtectedRoute element={<NewPage />} />} />
             <Route path="/chat" element={<ProtectedRoute element={<ChatInterface />} />} />
             <Route path="/diary" element={<ProtectedRoute element={<DiaryApp />} />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </LazyErrorBoundary>

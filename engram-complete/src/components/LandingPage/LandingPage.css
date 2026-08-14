@@ -312,11 +312,6 @@ body.dark-mode {
   justify-content: space-between;
   align-items: center;
   gap: 4rem;
-  opacity: 0;
-  transform: translateY(50px);
-  transition:
-    opacity 0.4s ease,
-    transform 0.4s ease;
   width: 100%;
   padding-top: 50px;
 }
@@ -330,8 +325,6 @@ body.dark-mode {
 }
 
 .concept-section.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .concept-header {
@@ -408,14 +401,9 @@ body.dark-mode {
   overflow: hidden;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   position: relative;
-  transform: scale(0.95) translateY(20px);
-  opacity: 0;
-  transition: all 0.5s ease 0.1s;
 }
 
 .concept-section.visible .concept-card {
-  transform: scale(1) translateY(0);
-  opacity: 1;
 }
 
 .card-image {
@@ -423,11 +411,9 @@ body.dark-mode {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.5s ease;
 }
 
 .concept-card:hover .card-image {
-  transform: scale(1.05);
 }
 
 
