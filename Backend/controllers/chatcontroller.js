@@ -14,22 +14,7 @@ const CONFIG = {
   RATE_LIMIT_WINDOW: 60000,
   RATE_LIMIT_MAX: 10, 
 };
-const rateLimitStore = new Map();
-function checkRateLimit(userId) {
-  const now = Date.now();
-  const userLimit = rateLimitStore.get(userId) || { count: 0, resetTime: now + CONFIG.RATE_LIMIT_WINDOW };
-  if (now > userLimit.resetTime) {
-    userLimit.count = 1;
-    userLimit.resetTime = now + CONFIG.RATE_LIMIT_WINDOW;
-  } else {
-    userLimit.count++;
-  }
-  rateLimitStore.set(userId, userLimit);
-  if (userLimit.count > CONFIG.RATE_LIMIT_MAX) {
-    return false;
-  }
-  return true;
-}
+
 function detectPromptInjection(message) {
   const injectionPatterns = [
     /ignore.*instruction/i,
@@ -180,12 +165,7 @@ async function sendMessage(req, res) {
   if (!userId || !userMessage) {
     return res.status(400).json({ error: "Missing userId or message" });
   }
-  if (!checkRateLimit(userId)) {
-    console.warn(`⚠️ [RATE LIMIT] User ${userId} exceeded rate limit`);
-    return res.status(429).json({
-      error: "Too many requests. Please wait before sending another message.",
-    });
-  }
+
   if (userMessage.length > CONFIG.MAX_MESSAGE_LENGTH) {
     return res.status(400).json({
       error: `Message exceeds maximum length of ${CONFIG.MAX_MESSAGE_LENGTH} characters`,

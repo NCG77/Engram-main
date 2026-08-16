@@ -1,7 +1,6 @@
 const Diary = require("../models/diary");
 const Aura = require("../models/Aura");
-const { fork } = require("child_process");
-const path = require("path");
+const { auraQueue } = require("../queues/auraQueue");
 const { upsertDiaryToPinecone, deleteDiaryFromPinecone } = require("../utils/pinecone");
 const FALLBACK_PERSONALITY = {
   Openness: { Description: "Curious and open to new experiences." },
@@ -13,57 +12,16 @@ const FALLBACK_PERSONALITY = {
   Other: { Description: "Generated via fallback system." },
 };
 const triggerAuraUpdate = (userId) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const diaries = await Diary.find({ userId }).sort({ createdAt: 1 });
-      if (!diaries.length) {
-        return resolve(null);
-      }
-      const payload = diaries.map((d) => ({
-        text: d.content,
-        date: d.createdAt,
-      }));
-      const extractorPath = path.join(
-        __dirname,
-        "../TextExtraction/Extractor.js",
-      );
-      const extractorProcess = fork(extractorPath, [], {
-        env: { ...process.env },
-      });
-      let resultData = null;
-      extractorProcess.send({ payload });
-      extractorProcess.on("message", (message) => {
-        if (message.result) {
-          resultData = message.result;
-        } else if (message.error) {
-          console.error("❌ [Aura] Extractor reported error:", message.error);
-        }
-      });
-      extractorProcess.on("close", async (code) => {
-        let finalPersonality = resultData;
-        if (code !== 0 || !finalPersonality) {
-          console.error(
-            `⚠️ [Aura] Extractor failed (Code ${code}). USING FALLBACK.`,
-          );
-          finalPersonality = FALLBACK_PERSONALITY;
-        }
-        try {
-          const auraDoc = await Aura.findOneAndUpdate(
-            { userId },
-            { personality: finalPersonality },
-            { upsert: true, new: true, setDefaultsOnInsert: true },
-          );
-          resolve(auraDoc);
-        } catch (err) {
-          console.error("❌ [Aura] Database save failed:", err);
-          resolve(null);
-        }
-      });
-    } catch (err) {
-      console.error("❌ [Aura] Controller Error:", err);
-      resolve(null);
+  return auraQueue.add(
+    "updateAura",
+    { userId },
+    {
+      removeOnComplete: true,
+      removeOnFail: false,
+      attempts: 3,
+      backoff: { type: "exponential", delay: 2000 },
     }
-  });
+  );
 };
 const createDiaryEntry = async (req, res) => {
   const userId = req.userId || req.body.userId;
