@@ -1,6 +1,8 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './new_page.css';
+
+
 class Pixel {
     constructor(canvas, context, x, y, color, speed, delay) {
         this.width = canvas.width;
@@ -22,9 +24,11 @@ class Pixel {
         this.isReverse = false;
         this.isShimmer = false;
     }
+
     getRandomValue(min, max) {
         return Math.random() * (max - min) + min;
     }
+
     draw() {
         const centerOffset = this.maxSizeInteger * 0.5 - this.size * 0.5;
         this.ctx.fillStyle = this.color;
@@ -35,6 +39,7 @@ class Pixel {
             this.size
         );
     }
+
     appear() {
         this.isIdle = false;
         if (this.counter <= this.delay) {
@@ -51,6 +56,7 @@ class Pixel {
         }
         this.draw();
     }
+
     disappear() {
         this.isShimmer = false;
         this.counter = 0;
@@ -62,6 +68,7 @@ class Pixel {
         }
         this.draw();
     }
+
     shimmer() {
         if (this.size >= this.maxSize) {
             this.isReverse = true;
@@ -75,22 +82,29 @@ class Pixel {
         }
     }
 }
+
 const PixelCanvasDOM = ({ gap, speed, colors, noFocus }) => {
     const containerRef = useRef(null);
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
     const [isVisible, setIsVisible] = React.useState(false);
+
     useEffect(() => {
         if (!containerRef.current) return;
+        
         const observer = new IntersectionObserver(
             ([entry]) => setIsVisible(entry.isIntersecting),
             { threshold: 0.1 }
         );
+        
         observer.observe(containerRef.current);
         return () => observer.disconnect();
     }, []);
+
     useEffect(() => {
         if (!containerRef.current || !isVisible) return;
+        
         const pixelCanvas = document.createElement('pixel-canvas');
+        // Disable animation on mobile for performance
         if (isMobile || !isVisible) {
             pixelCanvas.dataset.speed = '0';
         } else {
@@ -102,8 +116,10 @@ const PixelCanvasDOM = ({ gap, speed, colors, noFocus }) => {
         containerRef.current.innerHTML = '';
         containerRef.current.appendChild(pixelCanvas);
     }, [gap, speed, colors, noFocus, isMobile, isVisible]);
+
     return <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 1 }}></div>;
 };
+
 if (typeof window !== 'undefined') {
     if (!customElements.get('pixel-canvas')) {
         class PixelCanvasElement extends HTMLElement {
@@ -115,16 +131,19 @@ if (typeof window !== 'undefined') {
                     overflow: hidden;
                 }
             `;
+
             constructor() {
                 super();
                 this.attachShadow({ mode: "open" });
             }
+
             get colors() {
                 return this.dataset.colors?.split(",") || ["#f8fafc", "#f1f5f9", "#cbd5e1"];
             }
+
             get gap() {
-                const value = this.dataset.gap || 12; 
-                const min = 6; 
+                const value = this.dataset.gap || 12; // Increased from 5 for performance
+                const min = 6; // Increased minimum
                 const max = 50;
                 if (Number(value) <= min) {
                     return min;
@@ -134,11 +153,12 @@ if (typeof window !== 'undefined') {
                     return parseInt(value);
                 }
             }
+
             get speed() {
-                const value = this.dataset.speed || 20; 
+                const value = this.dataset.speed || 20; // Reduced from 35
                 const min = 0;
                 const max = 100;
-                const throttle = 0.0008; 
+                const throttle = 0.0008; // Reduced throttle
                 if (Number(value) <= min || this.reducedMotion) {
                     return min;
                 } else if (Number(value) >= max) {
@@ -147,9 +167,11 @@ if (typeof window !== 'undefined') {
                     return parseInt(value) * throttle;
                 }
             }
+
             get noFocus() {
                 return this.hasAttribute("data-no-focus");
             }
+
             connectedCallback() {
                 const canvas = document.createElement("canvas");
                 const sheet = new CSSStyleSheet();
@@ -159,7 +181,7 @@ if (typeof window !== 'undefined') {
                 this.shadowRoot.append(canvas);
                 this.canvas = this.shadowRoot.querySelector("canvas");
                 this.ctx = this.canvas.getContext("2d", { willReadFrequently: false });
-                this.timeInterval = 1000 / 30; 
+                this.timeInterval = 1000 / 30; // Reduced from 60fps to 30fps
                 this.timePrevious = performance.now();
                 this.reducedMotion = window.matchMedia(
                     "(prefers-reduced-motion: reduce)"
@@ -181,6 +203,7 @@ if (typeof window !== 'undefined') {
                     setTimeout(() => this.handleAnimation("disappear"), 10);
                 }
             }
+
             disconnectedCallback() {
                 if (this.resizeObserver) this.resizeObserver.disconnect();
                 if (this._parent) {
@@ -194,30 +217,37 @@ if (typeof window !== 'undefined') {
                 if (this.animation) cancelAnimationFrame(this.animation);
                 delete this._parent;
             }
+
             handleEvent(event) {
                 const handler = `on${event.type}`;
                 if (typeof this[handler] === 'function') {
                     this[handler](event);
                 }
             }
+
             onmouseenter() {
                 this.handleAnimation("appear");
             }
+
             onmouseleave() {
                 this.handleAnimation("disappear");
             }
+
             onfocusin(e) {
                 if (e.currentTarget.contains(e.relatedTarget)) return;
                 this.handleAnimation("appear");
             }
+
             onfocusout(e) {
                 if (e.currentTarget.contains(e.relatedTarget)) return;
                 this.handleAnimation("disappear");
             }
+
             handleAnimation(name) {
                 if (this.animation) cancelAnimationFrame(this.animation);
                 this.animation = requestAnimationFrame(() => this.animate(name));
             }
+
             init() {
                 const rect = this.getBoundingClientRect();
                 const width = Math.floor(rect.width) || 300;
@@ -229,12 +259,14 @@ if (typeof window !== 'undefined') {
                 this.canvas.style.height = `${height}px`;
                 this.createPixels();
             }
+
             getDistanceToCanvasCenter(x, y) {
                 const dx = x - this.canvas.width / 2;
                 const dy = y - this.canvas.height / 2;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 return distance;
             }
+
             createPixels() {
                 const actualGap = this.gap;
                 for (let x = 0; x < this.canvas.width; x += actualGap) {
@@ -251,132 +283,55 @@ if (typeof window !== 'undefined') {
                     }
                 }
             }
+
             animate(fnName) {
                 const timeNow = performance.now();
                 const timePassed = timeNow - this.timePrevious;
+                
                 if (timePassed < this.timeInterval) {
                     this.animation = requestAnimationFrame(() => this.animate(fnName));
                     return;
                 }
+                
                 this.timePrevious = timeNow - (timePassed % this.timeInterval);
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
                 if (!this.pixels || this.pixels.length === 0) {
                     this.createPixels();
                     return;
                 }
+                
                 let allIdle = true;
                 const pixelCount = this.pixels.length;
+                
                 for (let i = 0; i < pixelCount; i++) {
                     this.pixels[i][fnName]();
                     if (!this.pixels[i].isIdle) {
                         allIdle = false;
                     }
                 }
+                
                 if (allIdle && fnName === "disappear") {
                     cancelAnimationFrame(this.animation);
                     this._animationActive = false;
                     return;
                 }
+                
                 this.animation = requestAnimationFrame(() => this.animate(fnName));
             }
         }
+
         customElements.define('pixel-canvas', PixelCanvasElement);
     }
 }
-const Moon = ({ size = 18 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-  </svg>
-);
-const Sun = ({ size = 18 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="4" />
-    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-  </svg>
-);
 
 const NewPage = () => {
-    const navigate = useNavigate();
-    const [isDarkMode, setIsDarkMode] = useState(true);
-
-    useEffect(() => {
-        const savedTheme = localStorage.getItem("engram-theme");
-        if (savedTheme === "light") {
-            setIsDarkMode(false);
-            document.body.classList.remove("dark-mode");
-            document.body.classList.add("light-mode");
-        } else {
-            setIsDarkMode(true);
-            document.body.classList.add("dark-mode");
-            document.body.classList.remove("light-mode");
-        }
-    }, []);
-
-    const toggleTheme = () => {
-        setIsDarkMode(!isDarkMode);
-        if (isDarkMode) {
-            localStorage.setItem("engram-theme", "light");
-            document.body.classList.remove("dark-mode");
-            document.body.classList.add("light-mode");
-        } else {
-            localStorage.setItem("engram-theme", "dark");
-            document.body.classList.add("dark-mode");
-            document.body.classList.remove("light-mode");
-        }
-    };
-
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userName");
-        navigate("/");
-    };
     return (
-        <div className={`new-page-container ${isDarkMode ? "dark" : "light"}`}>
-            <div className="top-actions" style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 10, display: 'flex', gap: '15px', alignItems: 'center' }}>
-                <button
-                    onClick={toggleTheme}
-                    style={{
-                        background: 'transparent',
-                        border: 'none',
-                        cursor: 'pointer',
-                        color: isDarkMode ? 'white' : 'black',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '40px',
-                        height: '40px',
-                        borderRadius: '50%',
-                        transition: 'background-color 0.3s ease'
-                    }}
-                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'}
-                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                    aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
-                >
-                    {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-                </button>
-                <button 
-                    onClick={handleLogout}
-                    style={{
-                        padding: '8px 16px',
-                        backgroundColor: '#ff475600',
-                        color: isDarkMode ? 'white' : 'black',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        transition: 'background-color 0.3s ease'
-                    }}
-                    onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#ff3838'; e.currentTarget.style.color = 'white'; }}
-                    onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#ff475600'; e.currentTarget.style.color = isDarkMode ? 'white' : 'black'; }}
-                >
-                    Logout
-                </button>
-            </div>
+        <div className="new-page-container">
             <div className="main">
                 <div style={{ textAlign: 'left', marginBottom: '2rem', position: 'relative', zIndex: 2 }}>
                     <h1>Engram</h1>
-                    <h2 style={{ opacity: 0.8 }}>Store your digital self Online.</h2>
+                    <h2>Store your digital self Online.</h2>
                 </div>
                 <Link to="/chat" style={{ textDecoration: 'none', color: 'inherit', position: 'relative', zIndex: 2 }}>
                     <div className="card" style={{ "--active-color": "#fef08a", position: "relative", overflow: "hidden" }}>
@@ -392,6 +347,7 @@ const NewPage = () => {
                         <span className="card-text">Replica</span>
                     </div>
                 </Link>
+
                 <Link to="/diary" style={{ textDecoration: 'none', color: 'inherit', position: 'relative', zIndex: 2 }}>
                     <div className="card" style={{ "--active-color": "#672026", position: "relative", overflow: "hidden" }}>
                         <PixelCanvasDOM
@@ -410,4 +366,5 @@ const NewPage = () => {
         </div>
     );
 };
+
 export default NewPage; 

@@ -1,70 +1,38 @@
-import React, { Suspense, lazy, Component } from "react";
+import React, { Suspense, lazy } from "react";
 import './App.css';
 import { Routes, Route, Navigate } from "react-router-dom";
+
 const Auth = lazy(() => import("./components/auth/Auth"));
+const ForgotPassword = lazy(() => import("./components/auth/ForgotPassword"));
+const ResetPassword = lazy(() => import("./components/auth/ResetPassword"));
 const NewPage = lazy(() => import("./components/new_page/new_page"));
 const ChatInterface = lazy(() => import("./components/chat_page/ChatInterface"));
 const DiaryApp = lazy(() => import("./components/diary_page/DiaryApp"));
 const LandingPage = lazy(() => import("./components/LandingPage/landing"));
-const PrivacyPolicy = lazy(() => import("./components/policies/PrivacyPolicy"));
-const TermsOfService = lazy(() => import("./components/policies/TermsOfService"));
+
 const PageLoader = () => (
   <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", fontFamily: "system-ui, sans-serif" }}>
     Loading...
   </div>
 );
-const ErrorFallback = () => (
-  <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", fontFamily: "system-ui, sans-serif", textAlign: "center" }}>
-    <div>
-      <h2>Failed to load page</h2>
-      <p>Please try refreshing or go back to the <a href="/">home page</a></p>
-    </div>
-  </div>
-);
-class LazyErrorBoundary extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-  componentDidCatch(error) {
-    console.error("Lazy loading error:", error);
-  }
-  render() {
-    if (this.state.hasError) {
-      return <ErrorFallback />;
-    }
-    return this.props.children;
-  }
-}
-const PublicRoute = ({ element }) => {
-  const token = localStorage.getItem("token");
-  return token ? <Navigate to="/new_page" replace /> : element;
-};
-const ProtectedRoute = ({ element }) => {
-  const token = localStorage.getItem("token");
-  return !token ? <Navigate to="/auth" replace /> : element;
-};
+
 const App = () => {
   return (
     <div className="main-app-container">
       <Suspense fallback={<PageLoader />}>
-        <LazyErrorBoundary>
-          <Routes>
-            <Route path="/" element={<PublicRoute element={<LandingPage />} />} />
-            <Route path="/auth" element={<PublicRoute element={<Auth />} />} />
-            <Route path="/new_page" element={<ProtectedRoute element={<NewPage />} />} />
-            <Route path="/chat" element={<ProtectedRoute element={<ChatInterface />} />} />
-            <Route path="/diary" element={<ProtectedRoute element={<DiaryApp />} />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<TermsOfService />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </LazyErrorBoundary>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/new_page" element={<NewPage />} />
+          <Route path="/chat" element={<ChatInterface />} />
+          <Route path="/diary" element={<DiaryApp />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </Suspense>
     </div>
   );
 };
+
 export default App;

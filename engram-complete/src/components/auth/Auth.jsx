@@ -1,20 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./styles.css";
-
-const EyeIcon = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#757575" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-    <circle cx="12" cy="12" r="3" />
-  </svg>
-);
-
-const EyeOffIcon = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="#757575" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
-    <line x1="1" y1="1" x2="23" y2="23" />
-  </svg>
-);
 
 const Auth = () => {
   const [signIn, toggle] = useState(true);
@@ -25,21 +11,25 @@ const Auth = () => {
   const [messageType, setMessageType] = useState("");
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [isSigningUp, setIsSigningUp] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
   const clearMessage = () => {
     setMessage("");
     setMessageType("");
   };
+
   const handleSignUp = async (e) => {
     e.preventDefault();
     clearMessage();
+
     if (!name || !email || !password) {
       setMessage("Please fill out all fields.");
       setMessageType("error");
       return;
     }
+
     setIsSigningUp(true);
+
     try {
       const res = await fetch(
         `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/users/register`,
@@ -50,6 +40,7 @@ const Auth = () => {
         }
       );
       const data = await res.json();
+
       if (res.ok) {
         setMessage("Registration successful! Please sign in.");
         setMessageType("success");
@@ -69,15 +60,19 @@ const Auth = () => {
       setIsSigningUp(false);
     }
   };
+
   const handleSignIn = async (e) => {
     e.preventDefault();
     clearMessage();
+
     if (!email || !password) {
       setMessage("Please enter both email and password.");
       setMessageType("error");
       return;
     }
+
     setIsSigningIn(true);
+
     try {
       const response = await fetch(
         `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/users/login`,
@@ -88,6 +83,7 @@ const Auth = () => {
         }
       );
       const data = await response.json();
+
       if (response.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("userName", data.name);
@@ -104,6 +100,7 @@ const Auth = () => {
       setIsSigningIn(false);
     }
   };
+
   return (
     <div className="auth-page-wrapper">
       <div className="auth-container">
@@ -127,21 +124,13 @@ const Auth = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div className="input-group password-group">
+            <div className="input-group">
               <input
-                type={showPassword ? "text" : "password"}
+                type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
-              </button>
             </div>
             <button
               type="submit"
@@ -164,6 +153,7 @@ const Auth = () => {
             </div>
           </form>
         </div>
+
         <div className={`panel sign-in-container ${signIn ? "active" : ""}`}>
           <form onSubmit={handleSignIn}>
             {message && <div className={`message-box ${messageType}`}>{message}</div>}
@@ -176,22 +166,17 @@ const Auth = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div className="input-group password-group">
+            <div className="input-group">
               <input
-                type={showPassword ? "text" : "password"}
+                type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
-              </button>
             </div>
+            <Link to="/forgot-password" className="forgot-password">
+              Forgot password?
+            </Link>
             <button
               type="submit"
               className={`auth-btn ${isSigningIn ? "loading" : ""}`}
@@ -213,6 +198,7 @@ const Auth = () => {
             </div>
           </form>
         </div>
+
         <div className={`overlay-container ${!signIn ? "right-panel-active" : ""}`}>
           <div className="overlay">
             <div className="overlay-panel overlay-left">
@@ -225,6 +211,7 @@ const Auth = () => {
                 Sign In
               </button>
             </div>
+
             <div className="overlay-panel overlay-right">
               <h1 className="overlay-title">Welcome Back</h1>
               <p>Access your Engram account and continue your journey</p>
@@ -241,4 +228,5 @@ const Auth = () => {
     </div>
   );
 };
+
 export default Auth;

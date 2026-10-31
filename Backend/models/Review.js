@@ -1,17 +1,24 @@
-
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+
+const ratingField = { type: Number, min: 0, max: 10 };
+
 const ReviewSchema = new Schema({
-    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    ratings: {
-        openness: { type: Number, min: 0, max: 10, required: true },
-        conscientiousness: { type: Number, min: 0, max: 10, required: true },
-        extraversion: { type: Number, min: 0, max: 10, required: true },
-        agreeableness: { type: Number, min: 0, max: 10, required: true },
-        neuroticism: { type: Number, min: 0, max: 10, required: true },
-    },
-    thoughtsFeedback: { type: String },
-    comments: { type: String },
-    createdAt: { type: Date, default: Date.now },
+  user: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
+  sessionId: { type: Schema.Types.ObjectId, ref: "Session" },
+  // 0-10 = how well the twin matched THIS trait of the user, not trait intensity.
+  ratings: {
+    openness: ratingField,
+    conscientiousness: ratingField,
+    extraversion: ratingField,
+    agreeableness: ratingField,
+    neuroticism: ratingField,
+  },
+  // 0-10 = "this sounded like me" (PersonaChat-style overall likeness).
+  overallLikeness: { type: Number, min: 0, max: 10 },
+  thoughtsFeedback: { type: String, default: "" },
+  comments: { type: String, default: "" },
+  createdAt: { type: Date, default: Date.now },
 });
+
 module.exports = mongoose.model("Review", ReviewSchema);

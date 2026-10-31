@@ -1,5 +1,12 @@
-
 const mongoose = require("mongoose");
+
+const traitSchema = new mongoose.Schema(
+  {
+    Description: { type: String, default: "" },
+  },
+  { _id: false },
+);
+
 const auraSchema = new mongoose.Schema(
   {
     userId: {
@@ -9,15 +16,17 @@ const auraSchema = new mongoose.Schema(
       unique: true,
     },
     personality: {
-      Openness: { Description: String },
-      Conscientiousness: { Description: String },
-      Extraversion: { Description: String },
-      Agreeableness: { Description: String },
-      Neuroticism: { Description: String },
-      Relations: { Description: String },
-      Other: { Description: String },
+      Openness: traitSchema,
+      Conscientiousness: traitSchema,
+      Extraversion: traitSchema,
+      Agreeableness: traitSchema,
+      Neuroticism: traitSchema,
+      Relations: traitSchema,
+      Other: traitSchema,
+      Style: traitSchema,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
+
 module.exports = mongoose.model("Aura", auraSchema);

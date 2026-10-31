@@ -1,5 +1,5 @@
-
 const mongoose = require("mongoose");
+
 const diarySchema = new mongoose.Schema(
   {
     userId: {
@@ -10,7 +10,8 @@ const diarySchema = new mongoose.Schema(
     },
     title: {
       type: String,
-      required: true,
+      trim: true,
+      default: "Untitled",
     },
     content: {
       type: String,
@@ -19,4 +20,7 @@ const diarySchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+diarySchema.index({ userId: 1, createdAt: -1 });
+
 module.exports = mongoose.model("Diary", diarySchema);

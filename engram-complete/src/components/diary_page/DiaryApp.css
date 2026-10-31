@@ -3,10 +3,6 @@
   src: url("../assets/Dune_Rise.ttf") format("truetype");
 }
 
-html {
-  viewport-fit: cover;
-}
-
 *,
 *::before,
 *::after {
@@ -68,7 +64,6 @@ body.light-mode {
   top: 0;
   left: 0;
   transition: background-color var(--transition-speed) ease;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .diary-app-container.dark-mode {
@@ -304,8 +299,6 @@ body.light-mode {
   gap: 20px;
   position: relative;
   padding: 20px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .diary-title-input {
@@ -340,10 +333,9 @@ body.light-mode {
   resize: none;
   transition: all 0.3s ease;
   font-family: "Roboto Mono", monospace;
-  margin-bottom: 0;
+  margin-bottom: 70px;
   border: 1px solid;
   line-height: 1.6;
-  overflow-y: auto;
 }
 
 .dark-mode .diary-content-input {
@@ -384,13 +376,8 @@ body.light-mode {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: 20px 0 0 0;
-  flex-shrink: 0;
-  z-index: 20;
+  position: relative;
+  bottom: 20px;
 }
 
 .dark-mode .submit-button {
@@ -579,11 +566,9 @@ body.light-mode {
   }
 
   .mobile-view .diary-form {
-    height: calc(100vh - 80px - env(safe-area-inset-bottom, 0px));
+    height: calc(100vh - 80px);
     padding: 15px;
     padding-top: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
   }
 
   .mobile-view .entries-title {
@@ -596,15 +581,10 @@ body.light-mode {
   }
 
   .mobile-view .submit-button {
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 12px 20px;
+    bottom: 10px;
+    right: 10px;
+    padding: 10px 20px;
     font-size: 0.9rem;
-    flex-shrink: 0;
-    z-index: 20;
-    margin: 15px 0 0 0;
-    position: sticky;
   }
 }
 
@@ -617,7 +597,6 @@ body.light-mode {
   .mobile-view .diary-main-content {
     padding: 10px;
     padding-top: 70px;
-    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   }
 
   .mobile-view .journal-entry {
@@ -632,7 +611,6 @@ body.light-mode {
   .mobile-view .diary-content-input {
     padding: 12px;
     font-size: 0.9rem;
-    margin-bottom: 0;
   }
 
   .mobile-view .entry-content {
@@ -674,9 +652,9 @@ body.light-mode {
   background-color: rgba(0, 0, 0, 0.08);
 }
 
+/* Hide the page-level back button on small screens to avoid conflict with mobile controls */
 @media (max-width: 768px) {
   .page-back-button {
     display: none;
   }
 }
-

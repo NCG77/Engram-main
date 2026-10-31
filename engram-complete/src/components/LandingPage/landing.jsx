@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import "./LandingPage.css";
 import dotPattern from "./assets/Logo.svg";
 import diary from "./assets/Diary.jpg";
 import review from "./assets/review.jpg";
 import OCEAN from "./assets/OCEAN.jpg";
+
 export default function LandingPage() {
+  const navigate = useNavigate();
   const [activeQuestion, setActiveQuestion] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const sectionOneRef = useRef(null);
@@ -13,17 +16,18 @@ export default function LandingPage() {
   const faqSectionRef = useRef(null);
   const featuresRef = useRef(null);
   const ctaRef = useRef(null);
+
   useEffect(() => {
     setTimeout(() => {
       setIsLoaded(true);
     }, 300);
-    document.body.classList.add("light-mode");
-    document.body.classList.remove("dark-mode");
+
     const observerOptions = {
       root: null,
       rootMargin: "0px",
       threshold: 0.2,
     };
+
     const sectionObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -31,6 +35,7 @@ export default function LandingPage() {
         }
       });
     }, observerOptions);
+
     if (sectionOneRef.current) sectionObserver.observe(sectionOneRef.current);
     if (sectionTwoRef.current) sectionObserver.observe(sectionTwoRef.current);
     if (sectionThreeRef.current)
@@ -38,6 +43,7 @@ export default function LandingPage() {
     if (faqSectionRef.current) sectionObserver.observe(faqSectionRef.current);
     if (featuresRef.current) sectionObserver.observe(featuresRef.current);
     if (ctaRef.current) sectionObserver.observe(ctaRef.current);
+
     return () => {
       if (sectionOneRef.current)
         sectionObserver.unobserve(sectionOneRef.current);
@@ -51,9 +57,11 @@ export default function LandingPage() {
       if (ctaRef.current) sectionObserver.unobserve(ctaRef.current);
     };
   }, []);
+
   const toggleQuestion = (index) => {
     setActiveQuestion(activeQuestion === index ? null : index);
   };
+
   const faqItems = [
     {
       question: "What happens after I submit my personal documentation?",
@@ -91,6 +99,7 @@ export default function LandingPage() {
         "Our specialist team is available to address any inquiries. Contact us at justin.cider.dm@gmail.com and we'll provide comprehensive guidance tailored to your specific requirements.",
     },
   ];
+
   return (
     <div className={`main-container ${isLoaded ? "loaded" : ""}`}>
       <header className="main-header">
@@ -106,15 +115,17 @@ export default function LandingPage() {
           </div>
           <div
             className="nav-item"
-            onClick={() => (window.location.href = "/auth")}
+            onClick={() => navigate("/auth")}
           >
             Signup
           </div>
         </nav>
       </header>
+
       <div className="background-patterns">
-        <img src={dotPattern} alt="dotpattern" className="pattern-image" fetchpriority="high" decoding="async" />
+        <img src={dotPattern} alt="dotpattern" className="pattern-image" />
       </div>
+
       <main className="main-content">
         <h1 className="headline">Engram</h1>
         <p className="sub-description">
@@ -123,11 +134,12 @@ export default function LandingPage() {
         </p>
         <button
           className="cta-button"
-          onClick={() => (window.location.href = "/auth")}
+          onClick={() => navigate("/auth")}
         >
           Free – Start Now
         </button>
       </main>
+
       <section
         className="concept-section section-one"
         ref={sectionOneRef}
@@ -135,9 +147,10 @@ export default function LandingPage() {
       >
         <div className="concept-cards">
           <div className="concept-card">
-            <img src={diary} alt="diary" className="card-image" loading="lazy" decoding="async" />
+            <img src={diary} alt="diary" className="card-image" />
           </div>
         </div>
+
         <div className="concept-header">
           <span className="concept-number">1. Personal Documentation</span>
           <h2 className="concept-title">Chronicle Your Essence</h2>
@@ -149,6 +162,7 @@ export default function LandingPage() {
           </p>
         </div>
       </section>
+
       <section className="concept-section section-two" ref={sectionTwoRef}>
         <div className="concept-header">
           <span className="concept-number">2. Cognitive Analysis</span>
@@ -161,24 +175,25 @@ export default function LandingPage() {
             architecture.
           </p>
         </div>
+
         <div className="concept-cards">
           <div className="concept-card">
             <img
               src={OCEAN}
               alt="OCEAN personality model"
               className="card-image"
-              loading="lazy"
-              decoding="async"
             />
           </div>
         </div>
       </section>
+
       <section className="concept-section section-three" ref={sectionThreeRef}>
         <div className="concept-cards">
           <div className="concept-card">
-            <img src={review} alt="Test and review" className="card-image" loading="lazy" decoding="async" />
+            <img src={review} alt="Test and review" className="card-image" />
           </div>
         </div>
+
         <div className="concept-header">
           <span className="concept-number">3. Refinement & Deployment</span>
           <h2 className="concept-title">
@@ -192,6 +207,7 @@ export default function LandingPage() {
           </p>
         </div>
       </section>
+
       <section className="faq-section" ref={faqSectionRef}>
         <h2 className="faq-title">Frequently Asked Questions</h2>
         <div className="faq-container">
@@ -216,17 +232,18 @@ export default function LandingPage() {
           ))}
         </div>
       </section>
+
       <footer className="footer">
         <div className="footer-container">
           <div className="footer-brand">Engram</div>
           <div className="footer-links">
-            <div className="footer-link" onClick={() => window.location.href = "mailto:justin.cider.dm@gmail.com"}>Support</div>
-            <div className="footer-link" onClick={() => window.location.href = "/privacy"}>Privacy Policy</div>
-            <div className="footer-link" onClick={() => window.location.href = "/terms"}>Terms of Service</div>
+            <div className="footer-link">Support</div>
+            <div className="footer-link">Privacy Policy</div>
+            <div className="footer-link">Terms of Service</div>
           </div>
           <button
             className="footer-cta"
-            onClick={() => (window.location.href = "/auth")}
+            onClick={() => navigate("/auth")}
           >
             Free – Start Now
           </button>

@@ -17,7 +17,6 @@ body {
   height: auto;
   overflow-x: hidden;
   overflow-y: auto;
-  color-scheme: light;
 }
 
 body {
@@ -26,14 +25,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #000 !important;
-  background-color: #fff !important;
+  color: #000;
+  background-color: #fff;
   scroll-behavior: smooth;
-}
-
-body.dark-mode {
-  color: #000 !important;
-  background-color: #fff !important;
 }
 
 .main-container {
@@ -54,9 +48,9 @@ body.dark-mode {
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: #fff !important;
+  background-color: #fff;
   backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.95) !important;
+  background-color: rgba(255, 255, 255, 0.95);
   animation: fadeInDown 0.8s ease-out;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
@@ -68,7 +62,7 @@ body.dark-mode {
   letter-spacing: 0.05em;
   position: relative;
   transition: transform 0.3s ease;
-  color: #000 !important;
+  color: #000;
 }
 
 .logo:hover {
@@ -82,7 +76,7 @@ body.dark-mode {
   left: 0;
   width: 0;
   height: 2px;
-  background-color: #000 !important;
+  background-color: #000;
   transition: width 0.3s ease;
 }
 
@@ -101,7 +95,6 @@ body.dark-mode {
   cursor: pointer;
   position: relative;
   transition: transform 0.3s ease;
-  color: #000 !important;
 }
 
 .nav-item:hover {
@@ -115,7 +108,7 @@ body.dark-mode {
   left: 0;
   width: 0;
   height: 2px;
-  background-color: #000 !important;
+  background-color: #000;
   transition: width 0.3s ease;
 }
 
@@ -126,8 +119,8 @@ body.dark-mode {
 .badge {
   margin-left: 0.25rem;
   font-size: 0.625rem;
-  background-color: #000 !important;
-  color: #fff !important;
+  background-color: #000;
+  color: #fff;
   padding: 0.125rem 0.5rem;
   border-radius: 9999px;
   animation: pulse 2s infinite;
@@ -162,7 +155,7 @@ body.dark-mode {
 .main-content {
   max-width: 64rem;
   margin: 0 auto;
-  padding: -0.1rem 0.1rem 4rem;
+  padding: 0 0.1rem 4rem;
   text-align: center;
   position: relative;
   z-index: 5;
@@ -181,11 +174,10 @@ body.dark-mode {
   line-height: 1.2;
   margin-bottom: 1.5rem;
   animation: slideUpFade 0.6s ease-out;
-  color: #000 !important;
 }
 
 .subheadline {
-  color: black !important;
+  color: black;
   font-size: 1.125rem;
   line-height: 1.5;
   margin-bottom: 1rem;
@@ -195,7 +187,7 @@ body.dark-mode {
 }
 
 .sub-description {
-  color: #666 !important;
+  color: #666;
   font-size: 1rem;
   line-height: 1.6;
   margin-bottom: 2.5rem;
@@ -255,10 +247,10 @@ body.dark-mode {
   transition: 0s;
 }
 
-
+/* Features Section */
 .features-section {
   padding: 4rem 2rem;
-  background-color: #f9f9f9 !important;
+  background-color: #f9f9f9;
   max-width: 100%;
 }
 
@@ -271,7 +263,7 @@ body.dark-mode {
 }
 
 .feature-card {
-  background: white !important;
+  background: white;
   padding: 2rem;
   border-radius: 12px;
   text-align: center;
@@ -294,16 +286,16 @@ body.dark-mode {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
-  color: #000 !important;
+  color: #000;
 }
 
 .feature-description {
   font-size: 0.95rem;
   line-height: 1.6;
-  color: #666 !important;
+  color: #666;
 }
 
-
+/* Concept Sections */
 .concept-section {
   padding: 5rem 2rem;
   max-width: 1200px;
@@ -312,6 +304,11 @@ body.dark-mode {
   justify-content: space-between;
   align-items: center;
   gap: 4rem;
+  opacity: 0;
+  transform: translateY(50px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s ease;
   width: 100%;
   padding-top: 50px;
 }
@@ -325,6 +322,8 @@ body.dark-mode {
 }
 
 .concept-section.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .concept-header {
@@ -340,11 +339,11 @@ body.dark-mode {
   display: block;
   font-size: 1rem;
   font-weight: 600;
-  color: #6b7280 !important;
+  color: #6b7280;
   margin-bottom: 1rem;
   transform: translateX(-20px);
   opacity: 0;
-  transition: all 0.4s ease 0.05s;
+  transition: all 0.8s ease 0.2s;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -361,8 +360,8 @@ body.dark-mode {
   line-height: 1.2;
   transform: translateX(-20px);
   opacity: 0;
-  transition: all 0.4s ease 0.1s;
-  color: #000 !important;
+  transition: all 0.8s ease 0.4s;
+  color: #000;
 }
 
 .concept-section.visible .concept-title {
@@ -373,10 +372,10 @@ body.dark-mode {
 .concept-description {
   font-size: 1rem;
   line-height: 1.6;
-  color: #4b5563 !important;
+  color: #4b5563;
   transform: translateX(-20px);
   opacity: 0;
-  transition: all 0.4s ease 0.15s;
+  transition: all 0.8s ease 0.6s;
 }
 
 .concept-section.visible .concept-description {
@@ -401,9 +400,14 @@ body.dark-mode {
   overflow: hidden;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   position: relative;
+  transform: scale(0.95) translateY(20px);
+  opacity: 0;
+  transition: all 1s ease 0.4s;
 }
 
 .concept-section.visible .concept-card {
+  transform: scale(1) translateY(0);
+  opacity: 1;
 }
 
 .card-image {
@@ -411,12 +415,14 @@ body.dark-mode {
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.5s ease;
 }
 
 .concept-card:hover .card-image {
+  transform: scale(1.05);
 }
 
-
+/* Benefits Section */
 .benefits-section {
   max-width: 1200px;
   margin: 0 auto;
@@ -429,7 +435,7 @@ body.dark-mode {
   font-weight: 700;
   text-align: center;
   margin-bottom: 3rem;
-  color: #000 !important;
+  color: #000;
 }
 
 .benefits-grid {
@@ -440,7 +446,7 @@ body.dark-mode {
 
 .benefit-item {
   padding: 2rem;
-  border: 1px solid #e5e7eb !important;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
   transition: all 0.3s ease;
 }
@@ -454,23 +460,23 @@ body.dark-mode {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
-  color: #000 !important;
+  color: #000;
 }
 
 .benefit-item p {
   font-size: 0.95rem;
   line-height: 1.6;
-  color: #666 !important;
+  color: #666;
 }
 
-
+/* FAQ Section */
 .faq-section {
   max-width: 1000px;
   margin: 0 auto;
   padding: 5rem 2rem;
   opacity: 0;
   transform: translateY(30px);
-  transition: all 0.4s ease;
+  transition: all 0.8s ease;
   width: 100%;
 }
 
@@ -484,7 +490,7 @@ body.dark-mode {
   font-weight: 700;
   text-align: center;
   margin-bottom: 3rem;
-  color: #000 !important;
+  color: #000;
 }
 
 .faq-container {
@@ -494,7 +500,7 @@ body.dark-mode {
 }
 
 .faq-item {
-  border-bottom: 1px solid #e5e7eb !important;
+  border-bottom: 1px solid #e5e7eb;
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.5s ease;
@@ -546,11 +552,7 @@ body.dark-mode {
   justify-content: space-between;
   align-items: center;
   transition: all 0.3s ease;
-  color: #000 !important;
-}
-
-body.dark-mode .faq-question {
-  color: #000 !important;
+  color: #000;
 }
 
 .faq-question:hover {
@@ -561,7 +563,7 @@ body.dark-mode .faq-question {
   font-size: 1.5rem;
   font-weight: 300;
   transition: transform 0.3s ease;
-  color: #000 !important;
+  color: #000;
 }
 
 .faq-question[aria-expanded="true"] .faq-icon {
@@ -570,7 +572,7 @@ body.dark-mode .faq-question {
 
 .faq-answer {
   padding: 0 0 1.5rem;
-  color: #000000 !important;
+  color: #000000;
   line-height: 1.6;
   animation: slideDown 0.4s ease forwards;
   overflow: hidden;
@@ -579,12 +581,12 @@ body.dark-mode .faq-question {
 .ans-text {
   font-size: 1rem;
   line-height: 1.6;
-  color: #4b5563 !important;
+  color: #4b5563;
 }
 
-
+/* Final CTA Section */
 .final-cta-section {
-  background: linear-gradient(135deg, #000 0%, #1a1a1a 100%) !important;
+  background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
   color: #fff;
   padding: 5rem 2rem;
   text-align: center;
@@ -623,10 +625,10 @@ body.dark-mode .faq-question {
   background-color: #f0f0f0;
 }
 
-
+/* Footer */
 .footer {
   width: 100%;
-  background-color: #000 !important;
+  background-color: #000;
   color: #fff;
   padding: 3rem 1.5rem;
   z-index: 10;
@@ -683,7 +685,7 @@ body.dark-mode .faq-question {
   left: 0;
   width: 0;
   height: 2px;
-  background-color: #fff !important;
+  background-color: #fff;
   transition: width 0.3s ease;
 }
 
@@ -733,7 +735,7 @@ body.dark-mode .faq-question {
   transition: 0s;
 }
 
-
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -818,7 +820,7 @@ body.dark-mode .faq-question {
   }
 }
 
-
+/* Responsive Design */
 @media (max-width: 992px) {
   .concept-section {
     flex-direction: column;
@@ -985,4 +987,3 @@ body.dark-mode .faq-question {
     font-size: 1rem;
   }
 }
-
