@@ -849,3 +849,57 @@
     font-size: 0.75rem;
   }
 }
+
+/* Back to Workspace Buttons */
+.chat-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background-color: transparent;
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.chat-back-btn:hover {
+  background-color: var(--bg-card);
+  border-color: var(--text-primary);
+  transform: translateX(-2px);
+}
+
+.sidebar-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  padding: 5px 12px;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: auto;
+}
+
+.sidebar-back-btn:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-card);
+  border-color: var(--border-strong);
+}
+
+@media (max-width: 600px) {
+  .chat-back-btn span {
+    display: none;
+  }
+  .chat-back-btn {
+    padding: 6px 8px;
+  }
+}

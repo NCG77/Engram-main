@@ -261,13 +261,16 @@ const DiaryApp = () => {
     const savedTheme = localStorage.getItem("diary-theme");
     if (savedTheme === "light") {
       setIsDarkMode(false);
-      document.body.classList.remove("dark-mode");
-      document.body.classList.add("light-mode");
     } else {
       setIsDarkMode(true);
-      document.body.classList.add("dark-mode");
-      document.body.classList.remove("light-mode");
     }
+
+    return () => {
+      document.body.classList.remove("dark-mode", "light-mode");
+      document.body.removeAttribute("data-theme");
+      document.body.style.backgroundColor = "";
+      document.body.style.color = "";
+    };
 
     (async () => {
       try {
@@ -286,12 +289,8 @@ const DiaryApp = () => {
     setIsDarkMode(!isDarkMode);
     if (isDarkMode) {
       localStorage.setItem("diary-theme", "light");
-      document.body.classList.remove("dark-mode");
-      document.body.classList.add("light-mode");
     } else {
       localStorage.setItem("diary-theme", "dark");
-      document.body.classList.add("dark-mode");
-      document.body.classList.remove("light-mode");
     }
   };
 
@@ -318,7 +317,7 @@ const DiaryApp = () => {
         },
       );
       const auraData = await auraRes.json();
-      console.log("🧠 Updated aura/personality:", auraData.personality);
+      console.log("Updated aura/personality:", auraData.personality);
     } catch (err) {
       console.error("Failed to create entry or update aura", err);
       alert("Something went wrong. Please try again.");
@@ -342,11 +341,11 @@ const DiaryApp = () => {
     >
       <button
         className="page-back-button"
-        onClick={() => navigate("/chat")}
-        title="Go back"
-        aria-label="Go back"
+        onClick={() => navigate("/new_page")}
+        title="Back to Workspace"
+        aria-label="Back to Workspace"
       >
-        <ArrowLeft size={18} />
+        <ArrowLeft size={16} /> <span className="back-btn-text">Workspace</span>
       </button>
       <ThemeToggle isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
 

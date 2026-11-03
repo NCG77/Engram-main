@@ -9,24 +9,7 @@
   box-sizing: border-box;
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-  font-family:
-    "Inter",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    sans-serif;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
-}
+/* Scoped only to DiaryApp */
 
 :root {
   --dark-bg: #121212;
@@ -46,15 +29,7 @@ body {
   --transition-speed: 0.3s;
 }
 
-body.dark-mode {
-  background-color: var(--dark-bg);
-  color: var(--dark-text);
-}
 
-body.light-mode {
-  background-color: var(--light-bg);
-  color: var(--light-text);
-}
 
 .diary-app-container {
   display: flex;
@@ -619,42 +594,55 @@ body.light-mode {
 }
 .page-back-button {
   position: absolute;
-  top: 20px;
-  left: 310px;
+  top: 18px;
+  left: 315px;
   background: transparent;
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 9999px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   cursor: pointer;
-  z-index: 11;
-  transition: background-color 0.2s ease;
+  z-index: 15;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: inherit;
 }
 
 .dark-mode .page-back-button {
   color: var(--dark-text);
-  background-color: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.04);
 }
 
 .dark-mode .page-back-button:hover {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
 .light-mode .page-back-button {
   color: var(--light-text);
+  border-color: rgba(0, 0, 0, 0.15);
   background-color: rgba(0, 0, 0, 0.03);
 }
 
 .light-mode .page-back-button:hover {
   background-color: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.35);
 }
 
-/* Hide the page-level back button on small screens to avoid conflict with mobile controls */
 @media (max-width: 768px) {
   .page-back-button {
+    left: 70px;
+    top: 20px;
+    height: 40px;
+    padding: 0 10px;
+  }
+  .page-back-button .back-btn-text {
     display: none;
   }
 }

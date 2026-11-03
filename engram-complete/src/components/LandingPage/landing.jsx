@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LandingPage.css";
-import dotPattern from "./assets/Logo.svg";
+import heroHands from "./assets/Logo.jpg";
 import diary from "./assets/Diary.jpg";
 import review from "./assets/review.jpg";
 import OCEAN from "./assets/OCEAN.jpg";
@@ -14,48 +14,20 @@ export default function LandingPage() {
   const sectionTwoRef = useRef(null);
   const sectionThreeRef = useRef(null);
   const faqSectionRef = useRef(null);
-  const featuresRef = useRef(null);
   const ctaRef = useRef(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsLoaded(true);
-    }, 300);
+    // Reset any leaked styles or classes from other pages
+    document.body.classList.remove("dark-mode", "light-mode");
+    document.body.removeAttribute("data-theme");
+    document.body.style.backgroundColor = "#ffffff";
+    document.body.style.color = "#111111";
+    document.body.style.overflow = "auto";
+    document.documentElement.style.overflow = "auto";
+    document.documentElement.style.height = "auto";
+    document.body.style.height = "auto";
 
-    const observerOptions = {
-      root: null,
-      rootMargin: "0px",
-      threshold: 0.2,
-    };
-
-    const sectionObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-        }
-      });
-    }, observerOptions);
-
-    if (sectionOneRef.current) sectionObserver.observe(sectionOneRef.current);
-    if (sectionTwoRef.current) sectionObserver.observe(sectionTwoRef.current);
-    if (sectionThreeRef.current)
-      sectionObserver.observe(sectionThreeRef.current);
-    if (faqSectionRef.current) sectionObserver.observe(faqSectionRef.current);
-    if (featuresRef.current) sectionObserver.observe(featuresRef.current);
-    if (ctaRef.current) sectionObserver.observe(ctaRef.current);
-
-    return () => {
-      if (sectionOneRef.current)
-        sectionObserver.unobserve(sectionOneRef.current);
-      if (sectionTwoRef.current)
-        sectionObserver.unobserve(sectionTwoRef.current);
-      if (sectionThreeRef.current)
-        sectionObserver.unobserve(sectionThreeRef.current);
-      if (faqSectionRef.current)
-        sectionObserver.unobserve(faqSectionRef.current);
-      if (featuresRef.current) sectionObserver.unobserve(featuresRef.current);
-      if (ctaRef.current) sectionObserver.unobserve(ctaRef.current);
-    };
+    setIsLoaded(true);
   }, []);
 
   const toggleQuestion = (index) => {
@@ -66,7 +38,7 @@ export default function LandingPage() {
     {
       question: "What happens after I submit my personal documentation?",
       answer:
-        "Your reflections are processed through our proprietary AI engine, which extracts behavioral insights and personality markers. This data is Then analyzed using the OCEAN framework to construct your comprehensive digital profile.",
+        "Your reflections are processed through our proprietary AI engine, which extracts behavioral insights and personality markers. This data is then analyzed using the OCEAN framework to construct your comprehensive digital profile.",
     },
     {
       question: "How will I access and interact with my digital companion?",
@@ -76,34 +48,48 @@ export default function LandingPage() {
     {
       question: "Can I enhance my digital companion over time?",
       answer:
-        "Absolutely. We are planning to add tiered enhancement packages that expand your companion's capabilities, add specialized knowledge domains, and refine behavioral accuracy based on your evolving needs.",
+        "Absolutely. Continuous interaction and regular diary reflections expand your companion's memory, refine its contextual understanding, and elevate its behavioral fidelity based on your evolving thoughts.",
     },
     {
       question: "Do I retain complete ownership of my digital identity?",
       answer:
-        "Yes. You maintain full intellectual property rights over your digital companion. Engram serves as the steward of your data, providing secure access and control over deployment and usage parameters.",
+        "Yes. You maintain full ownership and intellectual property rights over your personal reflections and digital companion. Engram serves strictly as the secure custodian of your data, guaranteeing your privacy remains uncompromised.",
     },
     {
       question: "What payment and subscription options are available?",
       answer:
-        "We are still in the process to add major payment methods including credit cards, UPI, and bank transfers. Flexible subscription tiers will be available to accommodate both individual users and enterprise implementations.",
+        "Engram currently offers full free access to chronicle your thoughts and interact with your companion. Advanced subscription tiers with expanded context windows and custom fine-tuning will be introduced in future updates.",
     },
     {
       question: "What happens if I decide to discontinue the service?",
       answer:
-        "You maintain the right to request complete data deletion at any time. We provide a seamless offboarding process that ensures your digital identity is either retained under your control or completely removed, subject to our service agreement.",
+        "You maintain the right to request complete data deletion at any time. We provide an immediate, seamless offboarding process that permanently deletes your digital identity and entries from our systems.",
     },
     {
       question: "Still have questions?",
       answer:
-        "Our specialist team is available to address any inquiries. Contact us at justin.cider.dm@gmail.com and we'll provide comprehensive guidance tailored to your specific requirements.",
+        "Our specialist team is available to assist you. Contact us directly at justin.cider.dm@gmail.com and we will provide comprehensive guidance tailored to your specific inquiries.",
     },
   ];
 
   return (
     <div className={`main-container ${isLoaded ? "loaded" : ""}`}>
       <header className="main-header">
-        <div className="logo">Engram</div>
+        <div
+          className="logo"
+          onClick={() => {
+            if (localStorage.getItem("token")) {
+              navigate("/new_page");
+            } else {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          title="Engram"
+        >
+          Engram
+        </div>
         <nav className="navigation">
           <div
             className="nav-item"
@@ -115,44 +101,76 @@ export default function LandingPage() {
           </div>
           <div
             className="nav-item"
+            onClick={() =>
+              sectionTwoRef.current?.scrollIntoView({ behavior: "smooth" })
+            }
+          >
+            Analysis
+          </div>
+          <div
+            className="nav-item"
+            onClick={() =>
+              faqSectionRef.current?.scrollIntoView({ behavior: "smooth" })
+            }
+          >
+            FAQ
+          </div>
+          <div
+            className="nav-item nav-signin"
             onClick={() => navigate("/auth")}
           >
-            Signup
+            Sign In
           </div>
+          <button
+            className="nav-cta-btn"
+            onClick={() => navigate("/auth")}
+          >
+            Get Started
+          </button>
         </nav>
       </header>
 
-      <div className="background-patterns">
-        <img src={dotPattern} alt="dotpattern" className="pattern-image" />
+      <div className="background-patterns" aria-hidden="true">
+        <img src={heroHands} alt="" className="pattern-image" decoding="async" fetchPriority="high" />
       </div>
 
       <main className="main-content">
-        <h1 className="headline">Engram</h1>
-        <p className="sub-description">
+        <p className="hero-text-top">
           Create a personalized AI companion that authentically captures your
-          unique identity and intellectual essence.
+          unique identity, cognitive architecture, and intellectual essence.
         </p>
-        <button
-          className="cta-button"
-          onClick={() => navigate("/auth")}
-        >
-          Free – Start Now
-        </button>
+        <h1 className="headline">Engram</h1>
+        <div className="hero-hands-spacer" aria-hidden="true" />
+        <div className="hero-actions">
+          <button
+            className="cta-button cta-primary"
+            onClick={() => navigate("/auth")}
+          >
+            Free – Start Now
+          </button>
+          <button
+            className="cta-button cta-secondary"
+            onClick={() =>
+              sectionOneRef.current?.scrollIntoView({ behavior: "smooth" })
+            }
+          >
+            Explore the Process
+          </button>
+        </div>
       </main>
 
       <section
         className="concept-section section-one"
         ref={sectionOneRef}
-        style={{ marginTop: "80px" }}
       >
         <div className="concept-cards">
           <div className="concept-card">
-            <img src={diary} alt="diary" className="card-image" />
+            <img src={diary} alt="Personal documentation and journaling" className="card-image" loading="lazy" decoding="async" />
           </div>
         </div>
 
         <div className="concept-header">
-          <span className="concept-number">1. Personal Documentation</span>
+          <span className="concept-number">01 / Personal Documentation</span>
           <h2 className="concept-title">Chronicle Your Essence</h2>
           <p className="concept-description">
             Document your thoughts, insights, and experiences through daily
@@ -165,7 +183,7 @@ export default function LandingPage() {
 
       <section className="concept-section section-two" ref={sectionTwoRef}>
         <div className="concept-header">
-          <span className="concept-number">2. Cognitive Analysis</span>
+          <span className="concept-number">02 / Cognitive Analysis</span>
           <h2 className="concept-title">OCEAN Personality Framework</h2>
           <p className="concept-description">
             Our proprietary AI leverages the scientifically validated OCEAN
@@ -180,8 +198,10 @@ export default function LandingPage() {
           <div className="concept-card">
             <img
               src={OCEAN}
-              alt="OCEAN personality model"
+              alt="OCEAN personality framework model"
               className="card-image"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         </div>
@@ -190,12 +210,12 @@ export default function LandingPage() {
       <section className="concept-section section-three" ref={sectionThreeRef}>
         <div className="concept-cards">
           <div className="concept-card">
-            <img src={review} alt="Test and review" className="card-image" />
+            <img src={review} alt="Validation and optimization" className="card-image" loading="lazy" decoding="async" />
           </div>
         </div>
 
         <div className="concept-header">
-          <span className="concept-number">3. Refinement & Deployment</span>
+          <span className="concept-number">03 / Refinement & Deployment</span>
           <h2 className="concept-title">
             Validate & Optimize Your Digital Identity
           </h2>
@@ -208,6 +228,21 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <section className="final-cta-section" ref={ctaRef}>
+        <div className="final-cta-badge">Digital Continuum</div>
+        <h2 className="final-cta-title">Preserve Your Consciousness Online</h2>
+        <p className="final-cta-description">
+          Start journaling today and watch your authentic AI companion come to life.
+          Complete data privacy and full intellectual property ownership guaranteed.
+        </p>
+        <button
+          className="cta-button cta-primary cta-large"
+          onClick={() => navigate("/auth")}
+        >
+          Free – Start Now
+        </button>
+      </section>
+
       <section className="faq-section" ref={faqSectionRef}>
         <h2 className="faq-title">Frequently Asked Questions</h2>
         <div className="faq-container">
@@ -218,8 +253,8 @@ export default function LandingPage() {
                 onClick={() => toggleQuestion(index)}
                 aria-expanded={activeQuestion === index}
               >
-                {item.question}
-                <span className="faq-icon">
+                <span>{item.question}</span>
+                <span className="faq-icon" aria-hidden="true">
                   {activeQuestion === index ? "−" : "+"}
                 </span>
               </button>
@@ -235,18 +270,72 @@ export default function LandingPage() {
 
       <footer className="footer">
         <div className="footer-container">
-          <div className="footer-brand">Engram</div>
-          <div className="footer-links">
-            <div className="footer-link">Support</div>
-            <div className="footer-link">Privacy Policy</div>
-            <div className="footer-link">Terms of Service</div>
+          <div className="footer-col brand-col">
+            <div
+              className="footer-brand"
+              onClick={() => {
+                if (localStorage.getItem("token")) {
+                  navigate("/new_page");
+                } else {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              title="Engram"
+            >
+              Engram
+            </div>
+            <p className="footer-tagline">
+              Preserving your intellect, consciousness, and voice in the digital continuum.
+            </p>
           </div>
-          <button
-            className="footer-cta"
-            onClick={() => navigate("/auth")}
-          >
-            Free – Start Now
-          </button>
+
+          <div className="footer-links">
+            <button
+              className="footer-link-btn"
+              onClick={() => sectionOneRef.current?.scrollIntoView({ behavior: "smooth" })}
+            >
+              Process
+            </button>
+            <button
+              className="footer-link-btn"
+              onClick={() => faqSectionRef.current?.scrollIntoView({ behavior: "smooth" })}
+            >
+              FAQ
+            </button>
+            <a
+              className="footer-link-btn"
+              href="mailto:justin.cider.dm@gmail.com"
+            >
+              Support
+            </a>
+            <button
+              className="footer-link-btn"
+              onClick={() => navigate("/privacy-policy")}
+            >
+              Privacy Policy
+            </button>
+            <button
+              className="footer-link-btn"
+              onClick={() => navigate("/terms-of-service")}
+            >
+              Terms of Service
+            </button>
+          </div>
+
+          <div className="footer-cta-col">
+            <button
+              className="footer-cta"
+              onClick={() => navigate("/auth")}
+            >
+              Free – Start Now
+            </button>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <p>© {new Date().getFullYear()} Engram. All rights reserved.</p>
         </div>
       </footer>
     </div>

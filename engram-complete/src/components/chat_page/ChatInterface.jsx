@@ -98,6 +98,16 @@ const ChatInterface = () => {
   const [loading, setLoading] = useState(false);
   const [personality, setPersonality] = useState(null);
   const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    return () => {
+      document.body.removeAttribute("data-theme");
+      document.body.classList.remove("dark-mode", "light-mode");
+      document.body.style.backgroundColor = "";
+      document.body.style.color = "";
+    };
+  }, []);
+
   const [showWelcome, setShowWelcome] = useState(true);
   const [error, setError] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
@@ -491,7 +501,26 @@ const ChatInterface = () => {
       {/* Sidebar */}
       <aside className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
         <div className="sidebar-header">
-          <h2>Conversations</h2>
+          <button
+            className="sidebar-back-btn"
+            onClick={() => navigate("/new_page")}
+            title="Back to Workspace"
+            aria-label="Back to Workspace"
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            <span>Workspace</span>
+          </button>
           <div className="sidebar-icons">
             <button
               className="mobile-close-btn"
@@ -638,7 +667,12 @@ const ChatInterface = () => {
               </svg>
             </button>
           </div>
-          <div className="top-bar-center hide-mobile">
+          <div
+            className="top-bar-center hide-mobile"
+            onClick={() => navigate("/new_page")}
+            style={{ cursor: "pointer" }}
+            title="Engram Workspace"
+          >
             <h1>Engram</h1>
           </div>
           <div className="top-bar-right ">
